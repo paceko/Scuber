@@ -19,7 +19,7 @@ CREATE TABLE driver (
     driver_location VARCHAR(100) NULL
 );
 
-INSERT INTO passenger (firstname, lastname)
+INSERT INTO passenger (firstname, lastname, email, password)
 VALUES ('Harry', 'Potter'),
 (NULL, 'Weasley'),
 ('Draco', 'Malfoy'),
