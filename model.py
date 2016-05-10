@@ -77,6 +77,8 @@ class Driver(db.Model):
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
     driver_location = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(64), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
