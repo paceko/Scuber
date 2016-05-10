@@ -67,6 +67,7 @@ class Passenger(db.Model):
                                                                 self.password))
 
 
+# This driver is the second user
 class Driver(db.Model):
     """Drivers who are accepting scooter rides"""
 

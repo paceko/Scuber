@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, User, Movie, Rating
+from model import connect_to_db, db, Passenger, Driver, Ride
 
 
 app = Flask(__name__)
@@ -39,10 +39,8 @@ def register_process():
     # Get form variables
     email = request.form["email"]
     password = request.form["password"]
-    age = int(request.form["age"])
-    zipcode = request.form["zipcode"]
 
-    new_user = User(email=email, password=password, age=age, zipcode=zipcode)
+    new_user = User(email=email, password=password)
 
     db.session.add(new_user)
     db.session.commit()
@@ -57,6 +55,8 @@ def login_form():
 
     return render_template("login_form.html")
 
+#######################################################################################################
+#Passenger login
 
 @app.route('/login', methods=['POST'])
 def login_process():
@@ -66,20 +66,46 @@ def login_process():
     email = request.form["email"]
     password = request.form["password"]
 
-    user = User.query.filter_by(email=email).first()
+    passenger_user = Passenger.query.filter_by(email=email).first()
 
-    if not user:
+    if not passenger_user:
+        flash("No such passenger. Please try again.")
+        return redirect("/login")
+
+    if passenger_user.password != password:
+        flash("Incorrect password. Please try again.")
+        return redirect("/login")
+
+    session["passenger_id"] = passenger_user.passenger_id
+
+    flash("Vrooooom. You are logged in.")
+    return redirect("/passengers/%s" % passenger_user.passenger_id)
+
+#######################################################################################################
+#Driver login
+
+@app.route('/login', methods=['POST'])
+def login_process():
+    """Process login."""
+
+    # Get form variables
+    email = request.form["email"]
+    password = request.form["password"]
+
+    driver_user = Driver.query.filter_by(email=email).first()
+
+    if not driver_user:
         flash("No such user")
         return redirect("/login")
 
-    if user.password != password:
+    if driver_user.password != password:
         flash("Incorrect password")
         return redirect("/login")
 
-    session["user_id"] = user.user_id
+    session["driver_id"] = driver_user.driver_id
 
-    flash("Logged in")
-    return redirect("/users/%s" % user.user_id)
+    flash("Vrooooom. You are logged in.")
+    return redirect("/drivers/%s" % driver_user.driver_id)
 
 
 @app.route('/logout')
@@ -89,6 +115,8 @@ def logout():
     del session["user_id"]
     flash("Logged Out.")
     return redirect("/")
+
+ ################################################################################################
 
 
 @app.route("/users")
