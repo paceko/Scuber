@@ -1,22 +1,38 @@
-CREATE TABLE models (
-    id SERIAL PRIMARY KEY,
-    year INTEGER NOT NULL,
-    brand_name VARCHAR(50) NULL,
-    name VARCHAR(50) NOT NULL
+CREATE TABLE ride (
+    driver_id INTEGER NULL,
+    passenger_id INTEGER NULL,
+    passenger_location VARCHAR(100) NOT NULL,
+    passenger_destination VARCHAR(100) NOT NULL,
+    pick_up_time VARCHAR(50) NULL
 );
 
-CREATE TABLE brands (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    founded INTEGER,
-    headquarters VARCHAR(50),
-    discontinued INTEGER
+CREATE TABLE passenger (
+    passenger_id SERIAL PRIMARY KEY,
+    firstname VARCHAR(30) NULL,
+    lastname VARCHAR(30) NOT NULL
 );
 
-INSERT INTO brands (name, founded, headquarters, discontinued)
-VALUES ('Ford', 1903, 'Dearborn, MI', NULL),
-('Chrysler', 1925, 'Auburn Hills, Michigan', NULL),
-('Citroen', 1919, 'Saint-Ouen, France', NULL),
-('Hillman', 1907, 'Ryton-on-Dunsmore, England', 1981),
-('Chevrolet', 1911, 'Detroit, Michigan', NULL),
-('Cadillac', 1902, 'New York City, NY', NULL);
+CREATE TABLE driver (
+    driver_id SERIAL PRIMARY KEY,
+    firstname VARCHAR(30) NULL,
+    lastname VARCHAR(30) NOT NULL,
+    driver_location VARCHAR(100) NULL
+);
+
+INSERT INTO passenger (firstname, lastname)
+VALUES ('Harry', 'Potter'),
+(NULL, 'Weasley'),
+('Draco', 'Malfoy'),
+('Hermoine', 'Granger');
+
+INSERT INTO driver (firstname, lastname, driver_location)
+VALUES (NULL, 'Snape', 'Forbidden Forest'),
+('Professor', 'Dumbledore' , 'Kings Cross Station, Platform 9.75'),
+(NULL, 'Hagrid', 'Gringotts'),
+('Neville', 'Longbottom', 'Grimmauld Place');
+
+INSERT INTO ride (passenger_location, passenger_destination, pick_up_time)
+VALUES ('Forbidden Forest', 'Ministry of Magic', 2016-06-12 13:00:00),
+('Hogwarts', 'Malfoy Mansion', 2016-06-20 16:00:00),
+('Malfoy Mansion', 'Hogwarts', 2016-06-20 16:15:00),
+('Grimmauld Place', 'Diagon Alley', 2016-07-4 11:30:00);

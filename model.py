@@ -14,11 +14,12 @@ db = SQLAlchemy()
 # Model definitions
 # Part 1: Compose ORM
 
-class Ride(db.Ride):
+class Ride(db.Model):
     """Scooter Rides"""
 
     __tablename__ = "rides"
 
+    ride_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     driver_id = db.Column(db.Integer, db.ForeignKey('driver.driver_id'), nullable=True)
     passenger_id = db.Column(db.Integer, db.ForeignKey('driver.passenger_id'), nullable=True)
     passenger_location = db.Column(db.String(100), nullable=False)
@@ -41,8 +42,8 @@ class Ride(db.Ride):
                                                                 self.passenger_location,
                                                                 self.passenger_destination))
 
-
-class Passenger(db.Passenger):
+# This passenger is the user
+class Passenger(db.Model):
     """Passengers who are taking scooter rides"""
 
     __tablename__ = "passengers"
@@ -51,18 +52,22 @@ class Passenger(db.Passenger):
     passenger_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
+    email = db.Column(db.String(64), nullable=False)
+    password = db.Column(db.String(64), nullable=False)
 
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Passenger passenger_id=%s firstname=%s lastname=%s>"
+        return ("<Passenger passenger_id=%s firstname=%s lastname=%s email=%s password=%s>"
                                                             % (self.passenger_id,
                                                                 self.firstname,
-                                                                self.lastname))
+                                                                self.lastname,
+                                                                self.email,
+                                                                self.password))
 
 
-class Driver(db.Driver):
+class Driver(db.Model):
     """Drivers who are accepting scooter rides"""
 
     __tablename__ = "drivers"
