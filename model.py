@@ -1,7 +1,7 @@
 """Models and database functions for Rides project"""
 
 from flask_sqlalchemy import SQLAlchemy
-import correlation
+
 
 #This is the connection to the PostgreSQL database; I'm getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find 'session'
@@ -24,10 +24,10 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=True)
 
     #define relationship to the driver
-    driver = db.relationship("Driver", backref="rides")
+    driver = db.relationship("Driver", backref="user")
 
     #define relationship to the passenger
-    passenger = db.relationship("Passenger", backref="rides")
+    passenger = db.relationship("Passenger", backref="user")
 
 
     def __repr__(self):
@@ -44,8 +44,8 @@ class Ride(db.Model):
     __tablename__ = "rides"
 
     ride_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    driver_id = db.Column(db.Integer, db.ForeignKey('driver.driver_id'), nullable=True)
-    passenger_id = db.Column(db.Integer, db.ForeignKey('driver.passenger_id'), nullable=True)
+    driver_id = db.Column(db.Integer, db.ForeignKey('drivers.driver_id'), nullable=True)
+    passenger_id = db.Column(db.Integer, db.ForeignKey('passengers.passenger_id'), nullable=True)
     passenger_location = db.Column(db.String(100), nullable=False)
     passenger_destination = db.Column(db.String(100), nullable=False)
     pick_up_time = db.Column(db.DateTime, nullable=True)
@@ -76,6 +76,7 @@ class Passenger(db.Model):
 
 
     passenger_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
 
@@ -96,6 +97,7 @@ class Driver(db.Model):
 
 
     driver_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
     driver_location = db.Column(db.String(100), nullable=True)
@@ -128,4 +130,5 @@ if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
+    db.create_all()
     print "Connected to DB."
