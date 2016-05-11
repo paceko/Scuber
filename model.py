@@ -14,6 +14,30 @@ db = SQLAlchemy()
 # Model definitions
 # Part 1: Compose ORM
 
+class User(db.Model):
+    """Users (both passengers and drivers) of Scuber website."""
+
+    __tablename__ = "users"
+
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    email = db.Column(db.String(50), nullable=True)
+    password = db.Column(db.String(50), nullable=True)
+
+    #define relationship to the driver
+    driver = db.relationship("Driver", backref="rides")
+
+    #define relationship to the passenger
+    passenger = db.relationship("Passenger", backref="rides")
+
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+
+##############################################################################################
+# This passenger is the user
+
 class Ride(db.Model):
     """Scooter Rides"""
 
@@ -42,7 +66,9 @@ class Ride(db.Model):
                                                                 self.passenger_location,
                                                                 self.passenger_destination))
 
+##############################################################################################
 # This passenger is the user
+
 class Passenger(db.Model):
     """Passengers who are taking scooter rides"""
 
@@ -52,9 +78,6 @@ class Passenger(db.Model):
     passenger_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
-    email = db.Column(db.String(64), nullable=False)
-    password = db.Column(db.String(64), nullable=False)
-
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -62,14 +85,12 @@ class Passenger(db.Model):
         return ("<Passenger passenger_id=%s firstname=%s lastname=%s email=%s password=%s>"
                                                             % (self.passenger_id,
                                                                 self.firstname,
-                                                                self.lastname,
-                                                                self.email,
-                                                                self.password))
+                                                                self.lastname))
 
-
+##############################################################################################
 # This driver is the second user
 class Driver(db.Model):
-    """Drivers who are accepting scooter rides"""
+    """Drivers who are accepting passengers for scooter rides"""
 
     __tablename__ = "drivers"
 
@@ -78,8 +99,6 @@ class Driver(db.Model):
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
     driver_location = db.Column(db.String(100), nullable=True)
-    email = db.Column(db.String(64), nullable=False)
-    password = db.Column(db.String(64), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -90,7 +109,7 @@ class Driver(db.Model):
                                                                 self.lastname,
                                                                 self.driver_location))
 
-##############################################################################
+############################################################################################
 # Helper functions
 
 def connect_to_db(app):
@@ -104,8 +123,8 @@ def connect_to_db(app):
 
 
 if __name__ == "__main__":
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
+    # As a convenience, if I run this module interactively, it will leave
+    # me in a state of being able to work with the database directly.
 
     from server import app
     connect_to_db(app)

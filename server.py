@@ -5,7 +5,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Passenger, Driver, Ride
+from model import connect_to_db, db, Passenger, Driver, Ride, User
 
 
 app = Flask(__name__)
@@ -17,21 +17,25 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-
+#making connection to homepage
 @app.route('/')
 def index():
     """Homepage."""
 
+#show me the homepage.html
     return render_template("homepage.html")
 
-
+#making a connection to register
+#getting..
 @app.route('/register', methods=['GET'])
 def register_form():
     """Show form for user signup."""
 
+#show mw the register_form.html
     return render_template("register_form.html")
 
 
+#making a connection to register
 @app.route('/register', methods=['POST'])
 def register_process():
     """Process registration."""
@@ -40,13 +44,23 @@ def register_process():
     email = request.form["email"]
     password = request.form["password"]
 
-    new_user = User(email=email, password=password)
+    #
+    new_passenger = Passenger(email=email, password=password)
+    new_driver = Driver(email=email, password=password)
 
-    db.session.add(new_user)
+    #adding new passenger and driver to the db
+    db.session.add(new_passenger)
+    db.session.add(new_driver)
+
+    #committing the new driver and passenger to the db
     db.session.commit()
 
-    flash("User %s added." % email)
-    return redirect("/users/%s" % new_user.user_id)
+    #
+    flash("Passenger %s added." % email)
+    return redirect("/passengers/%s" % new_passenger.passenger_id)
+
+    flash("Driver %s added." % email)
+    return redirect("/drivers/%s" % new_driver.driver_id)
 
 
 @app.route('/login', methods=['GET'])
@@ -59,8 +73,8 @@ def login_form():
 #Passenger login
 
 @app.route('/login', methods=['POST'])
-def login_process():
-    """Process login."""
+def passenger_login_process():
+    """Process login passenger."""
 
     # Get form variables
     email = request.form["email"]
@@ -78,15 +92,15 @@ def login_process():
 
     session["passenger_id"] = passenger_user.passenger_id
 
-    flash("Vrooooom. You are logged in.")
+    flash("Vrooooom. Here we go!")
     return redirect("/passengers/%s" % passenger_user.passenger_id)
 
 #######################################################################################################
 #Driver login
 
 @app.route('/login', methods=['POST'])
-def login_process():
-    """Process login."""
+def driver_login_process():
+    """Process login driver."""
 
     # Get form variables
     email = request.form["email"]
@@ -104,7 +118,7 @@ def login_process():
 
     session["driver_id"] = driver_user.driver_id
 
-    flash("Vrooooom. You are logged in.")
+    flash("Vrooooom. Here we go!")
     return redirect("/drivers/%s" % driver_user.driver_id)
 
 
@@ -112,9 +126,11 @@ def login_process():
 def logout():
     """Log out."""
 
-    del session["user_id"]
-    flash("Logged Out.")
+    del session["passenger_id"]
+    del session["driver_id"]
+    flash("See you next time! You are logged out.")
     return redirect("/")
+
 
  ################################################################################################
 
@@ -263,10 +279,11 @@ def movie_detail_process(movie_id):
     db.session.commit()
 
     return redirect("/movies/%s" % movie_id)
-
+#########################################################################################
+# Debug
 
 if __name__ == "__main__":
-    # We have to set debug=True here, since it has to be True at the point
+    # I am setting debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
 
     # Do not debug for demo
