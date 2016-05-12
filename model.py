@@ -22,6 +22,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(50), nullable=True)
     password = db.Column(db.String(50), nullable=True)
+    #placed first and last name here because both drivers and passengers needs these
     firstname = db.Column(db.String(30), nullable=True)
     lastname = db.Column(db.String(30), nullable=False)
 

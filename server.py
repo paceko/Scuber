@@ -22,7 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage."""
 
-    #show me the homepage.html
+    #show me the register page
 
     return redirect("/register")
 
@@ -52,16 +52,18 @@ def register_process():
         db.session.add(new_passenger)
         #alert-message that will give name and email of passenger sign in
         flash("Passenger %s added." % email)
+        #committing the new driver and passenger to the db
+        db.session.commit()
         return redirect("/passengers/%s" % new_passenger.passenger_id)
     else:
         new_driver = Driver(email=email, password=password)
         db.session.add(new_driver)
         #alert-message that will give name and email of driver sign in
         flash("Driver %s added." % email)
+        #committing the new driver and passenger to the db
+        db.session.commit()
         return redirect("/drivers/%s" % new_driver.driver_id)
 
-    #committing the new driver and passenger to the db
-    db.session.commit()
 
 #######################################################################################################
 #Passenger and Driver login
@@ -84,23 +86,40 @@ def passenger_login_process():
     passenger_user = Passenger.query.filter_by(email=email).first()
     driver_user = Driver.query.filter_by(email=email).first()
 
+    # please check if customers are registered users or not
     if not passenger_user and not driver_user:
+    # if not alert message go to login
         flash("No such user. Please try again.")
         return redirect("/login")
 
+    #if the user is a passenger
     if passenger_user:
+        #and their password is correct
         if passenger_user.password == password:
+        #session = dictionary
             session["passenger_id"] = passenger_user.passenger_id
+        #go to the homepage
             return redirect("/")
-        if passenger_user.password != password:
+        #if the user passengers password is incorrect
+        else:
+        #alert message that the password is incorrect
             flash("Incorrect password. Please try again.")
+        #got to login page
             return redirect("/login")
-    else:
+
+    #if the user is not a passenger it's a driver
+    if driver_user:
+        #if the user driver enters in the correct password
         if driver_user.password == password:
+        #session = dictionary
             session["driver_id"] = driver_user.driver_id
+        #please direct them to the homepage
             return redirect("/")
-        if driver_user.password != password:
+        #if the user driver entered in an incorrect password
+        else:
+        #please alert message them that it was incorrect
             flash("Incorrect password")
+        #and redirect them to the login page
             return redirect("/login")
 
 @app.route('/logout')
