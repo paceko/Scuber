@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='well spaced' style='width:40%;'>
+<div>
+    <h1>Register Passenger</h1>
+    <form action="/register" method="POST">
+
+        <div class='form-group'>
+            <label>Email:
+                <input type='email' name='email' required class='form-control'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Password:
+                <input type='password' name='password' required class='form-control'>
+            </label>
+        </div>
+        <!-- sent along with form. So on server side we know if it's a passenger  -->
+        <input type='hidden' value='passenger' name='user_type'>
+
+
+        <div class='form-group'>
+            <input type='submit' value='Log In' class='btn btn-danger'>
+        </div>
+
+    <h1>Register Driver</h1>
+    <form action="/register" method="POST">
+
+        <div class='form-group'>
+            <label>Email:
+                <input type='email' name='email' required class='form-control'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Password:
+                <input type='password' name='password' required class='form-control'>
+            </label>
+        </div>
+        <!-- sent along with form. So on server side we know if it's a driver  -->
+        <input type= 'hidden' value='driver' name='user_type'>
+
+
+        <div class='form-group'>
+            <input type='submit' value='Log In' class='btn btn-danger'>
+        </div>
+
+    </form>
+</div>
+</div>
+{% endblock %}
