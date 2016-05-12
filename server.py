@@ -22,11 +22,13 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage."""
 
-#show me the homepage.html
-    return render_template("homepage.html")
+    #show me the homepage.html
+
+    return redirect("/register")
+
 
 #making a connection to register
-#getting..
+#getting the actual form
 @app.route('/register', methods=['GET'])
 def register_form():
     """Show form for user signup."""
@@ -40,31 +42,29 @@ def register_form():
 def register_process():
     """Process registration."""
 
-    # Get form variables
+    # Get form variables from register_form
     email = request.form["email"]
     password = request.form["password"]
 
-    #
-    new_passenger = Passenger(email=email, password=password)
-    new_driver = Driver(email=email, password=password)
-
     #adding new passenger and driver to the db
-    db.session.add(new_passenger)
-    db.session.add(new_driver)
+    if request.form["user_type"]=='passenger':
+        new_passenger = Passenger(email=email, password=password)
+        db.session.add(new_passenger)
+        #alert-message that will give name and email of passenger sign in
+        flash("Passenger %s added." % email)
+        return redirect("/passengers/%s" % new_passenger.passenger_id)
+    else:
+        new_driver = Driver(email=email, password=password)
+        db.session.add(new_driver)
+        #alert-message that will give name and email of driver sign in
+        flash("Driver %s added." % email)
+        return redirect("/drivers/%s" % new_driver.driver_id)
 
     #committing the new driver and passenger to the db
     db.session.commit()
 
-    #alert-message that will give name and email of passenger sign in
-    flash("Passenger %s added." % email)
-    return redirect("/passengers/%s" % new_passenger.passenger_id)
-
-    #alert-message that will give name and email of driver sign in
-    flash("Driver %s added." % email)
-    return redirect("/drivers/%s" % new_driver.driver_id)
-
 #######################################################################################################
-#Passenger login
+#Passenger and Driver login
 
 @app.route('/login', methods=['GET'])
 def login_form():
@@ -84,20 +84,24 @@ def passenger_login_process():
     passenger_user = Passenger.query.filter_by(email=email).first()
     driver_user = Driver.query.filter_by(email=email).first()
 
-    if not passenger_user:
-        flash("No such passenger. Please try again.")
+    if not passenger_user and not driver_user:
+        flash("No such user. Please try again.")
         return redirect("/login")
 
-    if passenger_user.password != password:
-        flash("Incorrect password. Please try again.")
-        return redirect("/login")
-
-    session["passenger_id"] = passenger_user.passenger_id
-
-    flash("Vrooooom. Here we go!")
-    return redirect("/passengers/%s" % passenger_user.passenger_id)
-
-
+    if passenger_user:
+        if passenger_user.password == password:
+            session["passenger_id"] = passenger_user.passenger_id
+            return redirect("/")
+        if passenger_user.password != password:
+            flash("Incorrect password. Please try again.")
+            return redirect("/login")
+    else:
+        if driver_user.password == password:
+            session["driver_id"] = driver_user.driver_id
+            return redirect("/")
+        if driver_user.password != password:
+            flash("Incorrect password")
+            return redirect("/login")
 
 @app.route('/logout')
 def logout():
@@ -108,31 +112,6 @@ def logout():
     return redirect("/")
 
 #######################################################################################################
-#Driver login
-
-@app.route('/login', methods=['POST'])
-def driver_login_process():
-    """Process login driver."""
-
-    # Get form variables
-    email = request.form["email"]
-    password = request.form["password"]
-
-    driver_user = Driver.query.filter_by(email=email).first()
-
-    if not driver_user:
-        flash("No such user")
-        return redirect("/login")
-
-    if driver_user.password != password:
-        flash("Incorrect password")
-        return redirect("/login")
-
-    session["driver_id"] = driver_user.driver_id
-
-    flash("Vrooooom. Here we go!")
-    return redirect("/drivers/%s" % driver_user.driver_id)
-
 
 # @app.route('/logout')
 # def logout():

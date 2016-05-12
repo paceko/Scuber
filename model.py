@@ -22,6 +22,8 @@ class User(db.Model):
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(50), nullable=True)
     password = db.Column(db.String(50), nullable=True)
+    firstname = db.Column(db.String(30), nullable=True)
+    lastname = db.Column(db.String(30), nullable=False)
 
     #define relationship to the driver
     driver = db.relationship("Driver", backref="user")
@@ -77,8 +79,7 @@ class Passenger(db.Model):
 
     passenger_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    firstname = db.Column(db.String(30), nullable=True)
-    lastname = db.Column(db.String(30), nullable=False)
+
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -98,8 +99,6 @@ class Driver(db.Model):
 
     driver_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    firstname = db.Column(db.String(30), nullable=True)
-    lastname = db.Column(db.String(30), nullable=False)
     driver_location = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
