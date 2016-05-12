@@ -63,6 +63,8 @@ def register_process():
     flash("Driver %s added." % email)
     return redirect("/drivers/%s" % new_driver.driver_id)
 
+#######################################################################################################
+#Passenger login
 
 @app.route('/login', methods=['GET'])
 def login_form():
@@ -70,8 +72,6 @@ def login_form():
 
     return render_template("login_form.html")
 
-#######################################################################################################
-#Passenger login
 
 @app.route('/login', methods=['POST'])
 def passenger_login_process():
@@ -82,6 +82,7 @@ def passenger_login_process():
     password = request.form["password"]
 
     passenger_user = Passenger.query.filter_by(email=email).first()
+    driver_user = Driver.query.filter_by(email=email).first()
 
     if not passenger_user:
         flash("No such passenger. Please try again.")
@@ -95,6 +96,7 @@ def passenger_login_process():
 
     flash("Vrooooom. Here we go!")
     return redirect("/passengers/%s" % passenger_user.passenger_id)
+
 
 
 @app.route('/logout')
@@ -143,151 +145,150 @@ def driver_login_process():
 
  ################################################################################################
 
+@app.route("/users")
+def user_list():
+    """Show list of users."""
 
-# @app.route("/users")
-# def user_list():
-#     """Show list of users."""
-
-#     users = User.query.all()
-#     return render_template("user_list.html", users=users)
-
-
-# @app.route("/users/<int:user_id>")
-# def user_detail(user_id):
-#     """Show info about user."""
-
-#     user = User.query.get(user_id)
-#     return render_template("user.html", user=user)
+    users = User.query.all()
+    return render_template("user_list.html", users=users)
 
 
-# @app.route("/movies")
-# def movie_list():
-#     """Show list of movies."""
+@app.route("/users/<int:user_id>")
+def user_detail(user_id):
+    """Show info about user."""
 
-#     movies = Movie.query.order_by('title').all()
-#     return render_template("movie_list.html", movies=movies)
-
-
-# @app.route("/movies/<int:movie_id>", methods=['GET'])
-# def movie_detail(movie_id):
-#     """Show info about movie.
-
-#     If a user is logged in, let them add/edit a rating.
-#     """
-#     print "made it here"
-
-#     movie = Movie.query.get(movie_id)
-
-#     user_id = session.get("user_id")
-
-#     if user_id:
-#         user_rating = Rating.query.filter_by(
-#             movie_id=movie_id, user_id=user_id).first()
-
-#     else:
-#         user_rating = None
-
-#     # Get average rating of movie
-
-#     rating_scores = [r.score for r in movie.ratings]
-#     avg_rating = float(sum(rating_scores)) / len(rating_scores)
-
-#     prediction = None
-
-#     # Prediction code: only predict if the user hasn't rated it.
-
-#     if (not user_rating) and user_id:
-#         user = User.query.get(user_id)
-#         if user:
-#             prediction = user.predict_rating(movie)
-
-#     # Either use the prediction or their real rating
-
-#     if prediction:
-#         # User hasn't scored; use our prediction if we made one
-#         effective_rating = prediction
-
-#     elif user_rating:
-#         # User has already scored for real; use that
-#         effective_rating = user_rating.score
-
-#     else:
-#         # User hasn't scored, and we couldn't get a prediction
-#         effective_rating = None
-
-#     # Get the eye's rating, either by predicting or using real rating
-
-#     the_eye = User.query.filter_by(email="the-eye@of-judgment.com").one()
-#     eye_rating = Rating.query.filter_by(
-#         user_id=the_eye.user_id, movie_id=movie.movie_id).first()
-
-#     if eye_rating is None:
-#         eye_rating = the_eye.predict_rating(movie)
-
-#     else:
-#         eye_rating = eye_rating.score
-
-#     if eye_rating and effective_rating:
-#         difference = abs(eye_rating - effective_rating)
-
-#     else:
-#         # We couldn't get an eye rating, so we'll skip difference
-#         difference = None
-
-#     # Depending on how different we are from the Eye, choose a message
-
-#     BERATEMENT_MESSAGES = [
-#         "I suppose you don't have such bad taste after all.",
-#         "I regret every decision that I've ever made that has brought me" +
-#             " to listen to your opinion.",
-#         "Words fail me, as your taste in movies has clearly failed you.",
-#         "Did you watch this movie in an alternate universe where your taste doesn't suck?",
-#         "Words cannot express the awfulness of your taste."
-#     ]
-
-#     if difference is not None:
-#         beratement = BERATEMENT_MESSAGES[int(difference)]
-
-#     else:
-#         beratement = None
-
-#     return render_template(
-#         "movie.html",
-#         movie=movie,
-#         user_rating=user_rating,
-#         average=avg_rating,
-#         prediction=prediction,
-#         eye_rating=eye_rating,
-#         difference=difference,
-#         beratement=beratement
-#         )
+    user = User.query.get(user_id)
+    return render_template("user.html", user=user)
 
 
-# @app.route("/movies/<int:movie_id>", methods=['POST'])
-# def movie_detail_process(movie_id):
-#     """Add/edit a rating."""
+@app.route("/movies")
+def movie_list():
+    """Show list of movies."""
 
-#     # Get form variables
-#     score = int(request.form["score"])
+    movies = Movie.query.order_by('title').all()
+    return render_template("movie_list.html", movies=movies)
 
-#     user_id = session.get("user_id")
-#     if not user_id:
-#         raise Exception("No user logged in.")
 
-#     rating = Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+@app.route("/movies/<int:movie_id>", methods=['GET'])
+def movie_detail(movie_id):
+    """Show info about movie.
 
-#     if rating:
-#         rating.score = score
-#         flash("Rating updated.")
+    If a user is logged in, let them add/edit a rating.
+    """
+    print "made it here"
 
-#     else:
-#         rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
-#         flash("Rating added.")
-#         db.session.add(rating)
+    movie = Movie.query.get(movie_id)
 
-#     db.session.commit()
+    user_id = session.get("user_id")
 
-#     return redirect("/movies/%s" % movie_id)
+    if user_id:
+        user_rating = Rating.query.filter_by(
+            movie_id=movie_id, user_id=user_id).first()
+
+    else:
+        user_rating = None
+
+    # Get average rating of movie
+
+    rating_scores = [r.score for r in movie.ratings]
+    avg_rating = float(sum(rating_scores)) / len(rating_scores)
+
+    prediction = None
+
+    # Prediction code: only predict if the user hasn't rated it.
+
+    if (not user_rating) and user_id:
+        user = User.query.get(user_id)
+        if user:
+            prediction = user.predict_rating(movie)
+
+    # Either use the prediction or their real rating
+
+    if prediction:
+        # User hasn't scored; use our prediction if we made one
+        effective_rating = prediction
+
+    elif user_rating:
+        # User has already scored for real; use that
+        effective_rating = user_rating.score
+
+    else:
+        # User hasn't scored, and we couldn't get a prediction
+        effective_rating = None
+
+    # Get the eye's rating, either by predicting or using real rating
+
+    the_eye = User.query.filter_by(email="the-eye@of-judgment.com").one()
+    eye_rating = Rating.query.filter_by(
+        user_id=the_eye.user_id, movie_id=movie.movie_id).first()
+
+    if eye_rating is None:
+        eye_rating = the_eye.predict_rating(movie)
+
+    else:
+        eye_rating = eye_rating.score
+
+    if eye_rating and effective_rating:
+        difference = abs(eye_rating - effective_rating)
+
+    else:
+        # We couldn't get an eye rating, so we'll skip difference
+        difference = None
+
+    # Depending on how different we are from the Eye, choose a message
+
+    BERATEMENT_MESSAGES = [
+        "I suppose you don't have such bad taste after all.",
+        "I regret every decision that I've ever made that has brought me" +
+            " to listen to your opinion.",
+        "Words fail me, as your taste in movies has clearly failed you.",
+        "Did you watch this movie in an alternate universe where your taste doesn't suck?",
+        "Words cannot express the awfulness of your taste."
+    ]
+
+    if difference is not None:
+        beratement = BERATEMENT_MESSAGES[int(difference)]
+
+    else:
+        beratement = None
+
+    return render_template(
+        "movie.html",
+        movie=movie,
+        user_rating=user_rating,
+        average=avg_rating,
+        prediction=prediction,
+        eye_rating=eye_rating,
+        difference=difference,
+        beratement=beratement
+        )
+
+
+@app.route("/movies/<int:movie_id>", methods=['POST'])
+def movie_detail_process(movie_id):
+    """Add/edit a rating."""
+
+    # Get form variables
+    score = int(request.form["score"])
+
+    user_id = session.get("user_id")
+    if not user_id:
+        raise Exception("No user logged in.")
+
+    rating = Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+
+    if rating:
+        rating.score = score
+        flash("Rating updated.")
+
+    else:
+        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
+        flash("Rating added.")
+        db.session.add(rating)
+
+    db.session.commit()
+
+    return redirect("/movies/%s" % movie_id)
 #########################################################################################
 # Debug
 
