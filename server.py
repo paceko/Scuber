@@ -40,7 +40,7 @@ def register_form():
 #making a connection to register
 @app.route('/register', methods=['POST'])
 def register_process():
-    """Process registration."""
+    """Process registration for passengers and drivers."""
 
     # Get form variables from register_form
     email = request.form["email"]
@@ -76,8 +76,8 @@ def login_form():
 
 
 @app.route('/login', methods=['POST'])
-def passenger_login_process():
-    """Process login passenger."""
+def login_process():
+    """Process login passenger and driver."""
 
     # Get form variables
     email = request.form["email"]
@@ -96,30 +96,30 @@ def passenger_login_process():
     if passenger_user:
         #and their password is correct
         if passenger_user.password == password:
-        #session = dictionary
+            #using the session dictionary and registering the key and value
             session["passenger_id"] = passenger_user.passenger_id
-        #go to the homepage
+            #go to the homepage
             return redirect("/")
         #if the user passengers password is incorrect
         else:
-        #alert message that the password is incorrect
+            #alert message that the password is incorrect
             flash("Incorrect password. Please try again.")
-        #got to login page
+            #got to login page
             return redirect("/login")
 
     #if the user is not a passenger it's a driver
     if driver_user:
         #if the user driver enters in the correct password
         if driver_user.password == password:
-        #session = dictionary
+            #using the session dictionary and registering the key and value
             session["driver_id"] = driver_user.driver_id
-        #please direct them to the homepage
+            #please direct them to the homepage
             return redirect("/")
         #if the user driver entered in an incorrect password
         else:
-        #please alert message them that it was incorrect
+            #please alert message them that it was incorrect
             flash("Incorrect password")
-        #and redirect them to the login page
+            #and redirect them to the login page
             return redirect("/login")
 
 @app.route('/logout')
@@ -130,19 +130,21 @@ def logout():
     flash("See you next time! You are logged out.")
     return redirect("/")
 
-#######################################################################################################
 
-# @app.route('/logout')
-# def logout():
-#     """Log out."""
+################################################################################################
+# Feed page
 
-#     del session["driver_id"]
-#     flash("See you next time! You are logged out.")
-#     return redirect("/")
+@app.route('/feed', methods=['GET'])
+def feed_list():
+    """Show feed to passengers and drivers"""
+
+    return render_template("feed.html")
 
 
- ################################################################################################
 
+##################################################################################################
+
+###################################################################################################
 @app.route("/users")
 def user_list():
     """Show list of users."""
