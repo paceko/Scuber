@@ -24,7 +24,7 @@ class User(db.Model):
     password = db.Column(db.String(50), nullable=True)
     #placed first and last name here because both drivers and passengers needs these
     firstname = db.Column(db.String(30), nullable=True)
-    lastname = db.Column(db.String(30), nullable=False)
+    lastname = db.Column(db.String(30), nullable=True)
 
     #define relationship to the driver
     driver = db.relationship("Driver", backref="user")
@@ -51,7 +51,8 @@ class Ride(db.Model):
     passenger_id = db.Column(db.Integer, db.ForeignKey('passengers.passenger_id'), nullable=True)
     passenger_location = db.Column(db.String(100), nullable=False)
     passenger_destination = db.Column(db.String(100), nullable=False)
-    pick_up_time = db.Column(db.DateTime, nullable=True)
+    pick_up_time = db.Column(db.Time, nullable=False)
+    pick_up_date = db.Column(db.Date, nullable=False)
 
     #define relationship to the driver
     driver = db.relationship("Driver", backref="rides")
@@ -59,6 +60,13 @@ class Ride(db.Model):
     #define relationship to the passenger
     passenger = db.relationship("Passenger", backref="rides")
 
+    def to_json(self):
+        return dict(ride_id=self.ride_id,
+                    driver_id=self.driver_id,
+                    passenger_id=self.passenger_id,
+                    passenger_location=self.passenger_location,
+                    passenger_destination=self.passenger_destination,
+                    pick_up_time=self.pick_up_time)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -99,7 +107,7 @@ class Driver(db.Model):
 
 
     driver_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
     driver_location = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):

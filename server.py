@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, flash, redirect, session
+from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Passenger, Driver, Ride, User
@@ -43,26 +43,37 @@ def register_process():
     """Process registration for passengers and drivers."""
 
     # Get form variables from register_form
-    email = request.form["email"]
-    password = request.form["password"]
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    new_user = User(email=email, password=password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    user = User.query.filter_by(email=email).first()
+
 
     #adding new passenger and driver to the db
     if request.form["user_type"]=='passenger':
-        new_passenger = Passenger(email=email, password=password)
+        new_passenger = Passenger(user_id=user.user_id)
         db.session.add(new_passenger)
         #alert-message that will give name and email of passenger sign in
         flash("Passenger %s added." % email)
+        #set passenger_id
+        session["passenger_id"] = user.user_id
         #committing the new driver and passenger to the db
         db.session.commit()
-        return redirect("/passengers/%s" % new_passenger.passenger_id)
+        return redirect("/feed")
     else:
-        new_driver = Driver(email=email, password=password)
+        new_driver = Driver(user_id=user.user_id)
         db.session.add(new_driver)
         #alert-message that will give name and email of driver sign in
         flash("Driver %s added." % email)
+        #set driver_id
+        session["driver_id"] = user.user_id
         #committing the new driver and passenger to the db
         db.session.commit()
-        return redirect("/drivers/%s" % new_driver.driver_id)
+        return redirect("/drivers")
 
 
 #######################################################################################################
@@ -138,12 +149,54 @@ def logout():
 def feed_list():
     """Show feed to passengers and drivers"""
 
-    return render_template("feed.html")
 
+
+    return render_template("feed.html")
 
 
 ##################################################################################################
 
+@app.route('/rides', methods=['POST', 'GET'])
+def rides_list():
+    """Show feed to passengers and drivers"""
+
+    #getting information from form
+    passenger_location = request.form.get('passenger_location')
+    passenger_destination = request.form.get('passenger_destination')
+    pick_up_time = request.form.get('pick_up_time')
+
+    print passenger_location
+    print passenger_destination
+    print pick_up_time
+
+    #if there is a passenger_id. Get the id.
+    if 'passenger_id' in session:
+        passenger_id = session['passenger_id']
+        #creating row that has the passengers stored in database
+        new_ride = Ride(passenger_location=passenger_location, passenger_destination=passenger_destination,
+        pick_up_time=pick_up_time, passenger_id=passenger_id)
+    #if there is a driver_id. Get the id.
+    else:
+        driver_id = session['driver_id']
+        #creating row that has the drivers stored in database
+        new_ride = Ride(driver_id=driver_id, passenger_location=passenger_location,
+                        passenger_destination=passenger_destination, pick_up_time=pick_up_time)
+
+
+    db.session.add(new_ride)
+    db.session.commit()
+
+    return 'made it to the server and back!'
+
+
+
+
+
+
+
+
+
+###################################################################################################
 ###################################################################################################
 @app.route("/users")
 def user_list():
