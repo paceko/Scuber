@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% block content %}
+
+	<div id='homepage-block'>
+
+    <style>
+      #map {
+        width: 500px;
+        height: 400px;
+      }
+    </style>
+
+  </head>
+
+  <body>
+
+<div>
+    <h1 id="feed-page-title">On demand scooter ridesharing</h1>
+</div>
+
+<div class='mapwrapper'>
+    <div id="map"></div>
+
+    <div class='feedwrapper'>
+
+        <ul id='feed'>
+            <li>Location------------------------Destination-------------------------Pick-up</li>
+            {%for ride in all_rides%}
+                <li>{{ride.passenger_destination}}
+                {{ride.passenger_location}}
+                {{ride.pick_up_time}}</li>
+            {%endfor%}
+        </ul>
+
+        <form action="feed" method="POST">
+        <input id='location' placeholder='location'
+        type='text' name="myTextBox"
+        class='feedinput'/>
+        <!-- class is to style the textbox -->
+
+        <input id='destination' placeholder='destination'
+        type='text' name="myTextBox"
+        class='feedinput'/>
+        <!-- class is to style the textbox -->
+
+
+        <input id='pick_up_time' placeholder='pick up'
+        type='datetime-local' name="myTextBox"
+        class='feedinput'/>
+
+
+
+
+        <!-- class is to style the textbox -->
+
+        <br/>
+        <button id='submit_button' type='button'  />
+
+        </form>
+
+    </div>
+</div>
+
+<!-- #############################################################
+Google Maps -->
+
+    <script>
+      function initMap() {
+        var mapDiv = document.getElementById('map');
+        var map = new google.maps.Map(mapDiv, {
+          center: {lat: 51.507222, lng: -0.1275},
+          zoom: 10
+        });
+    
+        var styles = 
+        [
+    {
+        "featureType": "administrative",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#444444"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 45
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#a0d3d3"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    }
+];
+
+map.setOptions({styles: styles});
+
+
+          // Create a marker and set its position.
+        var marker = new google.maps.Marker({
+        map: map,
+        position: {lat: 51.795314, lng: -0.554352}, 
+        title: 'Forbidden Forest'
+  });
+        // Create a marker and set its position.
+  //       var marker = new google.maps.Marker({
+  //       map: map,
+  //       position: {lat: 51.504444, lng: -0.125556}, 
+  //       title: 'Ministry of Magic'
+  // });
+   
+        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+        var marker = new google.maps.Marker({
+            map: map,
+            position: {lat: 51.504444, lng: -0.125556},
+            title: 'Ministry of Magic'
+            
+            // icon: iconBase + 'schools_maps.png'
+});
+//         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
+//         var icons = {
+//             parking: {
+//                 icon: iconBase + 'parking_lot_maps.png'
+//   },
+//             library: {
+//                 icon: iconBase + 'library_maps.png'
+//   },
+//             info: {
+//             icon: iconBase + 'info-i_maps.png'
+//   }
+// };
+
+        function addMarker(feature) {
+            var marker = new google.maps.Marker({
+                position: feature.position,
+                icon: icons[feature.type].icon,
+                map: map
+  });
+}
+
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+        async defer></script>
+
+  </body>
+
+ <!-- jQuery methods here -->
+
+
+<script type="text/javascript">
+
+// whenever you click the submit button it will add the location, 
+// destination and time to the feed
+$('#submit_button').click(function(){
+// grabbing location unit from html
+    var passenger_location = $('#location').val();
+    var passenger_destination = $('#destination').val();
+    var pick_up_time = $('#pick_up_time').val();
+    $('#feed').append('<li>'+passenger_location+', '+passenger_destination+', '+pick_up_time+'</li>');
+     // empties the boxes in html
+    $('.feedinput').val('');
+
+    // creating keys and values to be stored in the database
+    var feed_data = { 'passenger_location': passenger_location, 'passenger_destination': passenger_destination, 'pick_up_time': pick_up_time};
+    console.log(feed_data)
+
+    $.post('/rides', feed_data, function(result){
+        console.log(result)
+    });
+});
+
+
+    // $(function(){
+    // $.get("/rides.json", function(response){ $("#feed").append('<li>'+response.passenger_location+', '+response.passenger_destination+', '+response.pick_up_time+'</li>')
+    //     console.log(response)})
+
+    // });	
+
+</script> 
+
+
+</div>
+{% endblock %}
+

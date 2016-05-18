@@ -14,29 +14,29 @@ db = SQLAlchemy()
 # Model definitions
 # Part 1: Compose ORM
 
-class User(db.Model):
-    """Users (both passengers and drivers) of Scuber website."""
+# class User(db.Model):
+#     """Users (both passengers and drivers) of Scuber website."""
 
-    __tablename__ = "users"
+#     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    email = db.Column(db.String(50), nullable=True)
-    password = db.Column(db.String(50), nullable=True)
-    #placed first and last name here because both drivers and passengers needs these
-    firstname = db.Column(db.String(30), nullable=True)
-    lastname = db.Column(db.String(30), nullable=True)
+#     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     email = db.Column(db.String(50), nullable=False)
+#     password = db.Column(db.String(50), nullable=False)
+#     #placed first and last name here because both drivers and passengers needs these
+#     firstname = db.Column(db.String(30), nullable=False)
+#     lastname = db.Column(db.String(30), nullable=False)
 
-    #define relationship to the driver
-    driver = db.relationship("Driver", backref="user")
+#     #define relationship to the driver
+#     driver = db.relationship("Driver", backref="user")
 
-    #define relationship to the passenger
-    passenger = db.relationship("Passenger", backref="user")
+#     # #define relationship to the passenger
+#     # passenger = db.relationship("Passenger", backref="user")
 
 
-    def __repr__(self):
-        """Provide helpful representation when printed."""
+#     def __repr__(self):
+#         """Provide helpful representation when printed."""
 
-        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
+#         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
 ##############################################################################################
 # This passenger is the user
@@ -48,17 +48,20 @@ class Ride(db.Model):
 
     ride_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     driver_id = db.Column(db.Integer, db.ForeignKey('drivers.driver_id'), nullable=True)
-    passenger_id = db.Column(db.Integer, db.ForeignKey('passengers.passenger_id'), nullable=True)
+    passenger_id = db.Column(db.Integer, db.ForeignKey('passengers.passenger_id'), nullable=False)
     passenger_location = db.Column(db.String(100), nullable=False)
     passenger_destination = db.Column(db.String(100), nullable=False)
-    pick_up_time = db.Column(db.Time, nullable=False)
-    pick_up_date = db.Column(db.Date, nullable=False)
+    pick_up_time = db.Column(db.DateTime, nullable=False)
+
 
     #define relationship to the driver
     driver = db.relationship("Driver", backref="rides")
 
-    #define relationship to the passenger
+    #define relationship to the user
     passenger = db.relationship("Passenger", backref="rides")
+
+    # #define relationship to the passenger
+    # passenger = db.relationship("Passenger", backref="rides")
 
     def to_json(self):
         return dict(ride_id=self.ride_id,
@@ -78,7 +81,7 @@ class Ride(db.Model):
                                                                 self.passenger_destination))
 
 ##############################################################################################
-# This passenger is the user
+#This passenger is the user
 
 class Passenger(db.Model):
     """Passengers who are taking scooter rides"""
@@ -87,7 +90,10 @@ class Passenger(db.Model):
 
 
     passenger_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    firstname = db.Column(db.String(30), nullable=False)
+    lastname = db.Column(db.String(30), nullable=False)
 
 
     def __repr__(self):
@@ -107,8 +113,11 @@ class Driver(db.Model):
 
 
     driver_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=True)
     driver_location = db.Column(db.String(100), nullable=True)
+    email = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    firstname = db.Column(db.String(30), nullable=False)
+    lastname = db.Column(db.String(30), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""

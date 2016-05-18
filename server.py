@@ -5,7 +5,9 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, flash, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Passenger, Driver, Ride, User
+from model import connect_to_db, db, Driver, Ride, Passenger
+
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -45,34 +47,43 @@ def register_process():
     # Get form variables from register_form
     email = request.form.get("email")
     password = request.form.get("password")
+    firstname = request.form.get("firstname")
+    lastname = request.form.get("lastname")
 
-    new_user = User(email=email, password=password)
-    db.session.add(new_user)
-    db.session.commit()
+    # we don't want to have 2 people checking in under same address
 
-    user = User.query.filter_by(email=email).first()
 
 
     #adding new passenger and driver to the db
     if request.form["user_type"]=='passenger':
-        new_passenger = Passenger(user_id=user.user_id)
+        # give me passenger with this email
+        passenger = Passenger.query.filter_by(email=email).first()
+        if passenger:
+            flash("You have already registered as a passenger. Please log in.")
+            return redirect('/login')
+        new_passenger = Passenger(email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(new_passenger)
+        #committing the new driver and passenger to the db
+        db.session.commit()
         #alert-message that will give name and email of passenger sign in
         flash("Passenger %s added." % email)
+        passenger = Passenger.query.filter_by(email=email).one()
         #set passenger_id
-        session["passenger_id"] = user.user_id
-        #committing the new driver and passenger to the db
-        db.session.commit()
+        session["passenger_id"] = passenger.passenger_id
         return redirect("/feed")
     else:
-        new_driver = Driver(user_id=user.user_id)
+        driver = Driver.query.filter_by(email=email).first()
+        if driver:
+            return redirect('/login')
+        new_driver = Driver(email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(new_driver)
-        #alert-message that will give name and email of driver sign in
-        flash("Driver %s added." % email)
-        #set driver_id
-        session["driver_id"] = user.user_id
         #committing the new driver and passenger to the db
         db.session.commit()
+        #alert-message that will give name and email of driver sign in
+        flash("Driver %s added." % email)
+        driver = Driver.query.filter_by(email=email).one()
+        #set driver_id
+        session["driver_id"] = driver.driver_id
         return redirect("/drivers")
 
 
@@ -149,9 +160,9 @@ def logout():
 def feed_list():
     """Show feed to passengers and drivers"""
 
+    all_rides = Ride.query.all()
 
-
-    return render_template("feed.html")
+    return render_template("feed.html", all_rides=all_rides)
 
 
 ##################################################################################################
@@ -161,13 +172,18 @@ def rides_list():
     """Show feed to passengers and drivers"""
 
     #getting information from form
+    firstname = request.form.get('firstname')
+    lastname = request.form.get('lastname')
     passenger_location = request.form.get('passenger_location')
     passenger_destination = request.form.get('passenger_destination')
     pick_up_time = request.form.get('pick_up_time')
 
+
+    #test if it's working
     print passenger_location
     print passenger_destination
     print pick_up_time
+
 
     #if there is a passenger_id. Get the id.
     if 'passenger_id' in session:
@@ -175,24 +191,24 @@ def rides_list():
         #creating row that has the passengers stored in database
         new_ride = Ride(passenger_location=passenger_location, passenger_destination=passenger_destination,
         pick_up_time=pick_up_time, passenger_id=passenger_id)
+
+
+        db.session.add(new_ride)
+        db.session.commit()
+
+        # return all_rides
+
+        #  #testing with return text
+
+        return jsonify({"dicts": "all_rides"})
+
     #if there is a driver_id. Get the id.
-    else:
-        driver_id = session['driver_id']
-        #creating row that has the drivers stored in database
-        new_ride = Ride(driver_id=driver_id, passenger_location=passenger_location,
-                        passenger_destination=passenger_destination, pick_up_time=pick_up_time)
-
-
-    db.session.add(new_ride)
-    db.session.commit()
-
-    return 'made it to the server and back!'
-
-
-
-
-
-
+    # else:
+    #     driver_id = session['driver_id']
+    #     #creating row that has the drivers stored in database
+    #     new_ride = Ride(driver_id=driver_id, passenger_location=passenger_location,
+    #                     passenger_destination=passenger_destination, pick_up_time=pick_up_time,
+    #                     pick_up_date=pick_up_date)
 
 
 
