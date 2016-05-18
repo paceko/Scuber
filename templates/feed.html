@@ -15,7 +15,7 @@
   <body>
 
 <div>
-    <h1 id="feed-page-title">On demand scooter ridesharing</h1>
+    <h1 id="feed-page-title">on demand scooter ridesharing</h1>
 </div>
 
 <div class='mapwrapper'>
@@ -23,12 +23,14 @@
 
     <div class='feedwrapper'>
 
+        <!-- using jinja to make passenger data stay in feed -->
         <ul id='feed'>
-            <li>Location------------------------Destination-------------------------Pick-up</li>
             {%for ride in all_rides%}
-                <li>{{ride.passenger_destination}}
-                {{ride.passenger_location}}
-                {{ride.pick_up_time}}</li>
+                <li>
+                <div> {{ride.passenger_destination}} </div>
+                <div> {{ride.passenger_location}} </div>
+                <div>{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
+                </li>
             {%endfor%}
         </ul>
 
@@ -47,8 +49,6 @@
         <input id='pick_up_time' placeholder='pick up'
         type='datetime-local' name="myTextBox"
         class='feedinput'/>
-
-
 
 
         <!-- class is to style the textbox -->
@@ -163,12 +163,7 @@ map.setOptions({styles: styles});
         position: {lat: 51.795314, lng: -0.554352}, 
         title: 'Forbidden Forest'
   });
-        // Create a marker and set its position.
-  //       var marker = new google.maps.Marker({
-  //       map: map,
-  //       position: {lat: 51.504444, lng: -0.125556}, 
-  //       title: 'Ministry of Magic'
-  // });
+    
    
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var marker = new google.maps.Marker({
@@ -206,8 +201,8 @@ map.setOptions({styles: styles});
 
   </body>
 
- <!-- jQuery methods here -->
-
+    <!-- jQuery methods here -->
+    <!-- Javascript methods here -->
 
 <script type="text/javascript">
 
@@ -218,7 +213,25 @@ $('#submit_button').click(function(){
     var passenger_location = $('#location').val();
     var passenger_destination = $('#destination').val();
     var pick_up_time = $('#pick_up_time').val();
-    $('#feed').append('<li>'+passenger_location+', '+passenger_destination+', '+pick_up_time+'</li>');
+
+    // will split date into day, month, hour, AM/PM.
+    var date = Date.parse(pick_up_time)
+    var date_string = date.getDate()
+    // makes sure it is 12 hours the %12
+    var minutes_string = date.getMinutes()
+    var hour_string = date.getHours() %12 +':'+minutes_string;
+        if (date.getHours() > 12){
+            hour_string += 'PM'}
+            else
+                {hour_string += 'AM'}
+
+        date_string + minutes_string + hour_string
+    // add date_string to minutes_string to hour_string
+    // make array of all month with. get
+ 
+
+
+    $('#feed').append('<li><div>'+passenger_location+'</div><div>'+passenger_destination+'</div><div>'+pick_up_time+'</div></li>');
      // empties the boxes in html
     $('.feedinput').val('');
 
@@ -232,11 +245,6 @@ $('#submit_button').click(function(){
 });
 
 
-    // $(function(){
-    // $.get("/rides.json", function(response){ $("#feed").append('<li>'+response.passenger_location+', '+response.passenger_destination+', '+response.pick_up_time+'</li>')
-    //     console.log(response)})
-
-    // });	
 
 </script> 
 

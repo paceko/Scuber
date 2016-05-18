@@ -196,7 +196,7 @@ def rides_list():
         db.session.add(new_ride)
         db.session.commit()
 
-        # return all_rides
+        
 
         #  #testing with return text
 
@@ -333,31 +333,6 @@ def movie_detail(movie_id):
         )
 
 
-@app.route("/movies/<int:movie_id>", methods=['POST'])
-def movie_detail_process(movie_id):
-    """Add/edit a rating."""
-
-    # Get form variables
-    score = int(request.form["score"])
-
-    user_id = session.get("user_id")
-    if not user_id:
-        raise Exception("No user logged in.")
-
-    rating = Rating.query.filter_by(user_id=user_id, movie_id=movie_id).first()
-
-    if rating:
-        rating.score = score
-        flash("Rating updated.")
-
-    else:
-        rating = Rating(user_id=user_id, movie_id=movie_id, score=score)
-        flash("Rating added.")
-        db.session.add(rating)
-
-    db.session.commit()
-
-    return redirect("/movies/%s" % movie_id)
 #########################################################################################
 # Debug
 
