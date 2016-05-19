@@ -38,6 +38,8 @@
             <input type='submit' value='Log In' class='btn btn-default'>
         </div>
 
+    </form>
+
     <h1>Register Driver</h1>
     <form action="/register" method="POST">
 
@@ -65,7 +67,7 @@
             </label>
         </div>
 
-        <!-- sent along with form. So on server side we know if it's a driver  -->
+        <!-- sent along with form. So on server side we know if it's a driver or a passenger  -->
         <input type= 'hidden' value='driver' name='user_type'>
 
 

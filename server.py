@@ -51,7 +51,7 @@ def register_process():
     lastname = request.form.get("lastname")
 
     # we don't want to have 2 people checking in under same address
-
+    print request.form['user_type']
 
 
     #adding new passenger and driver to the db
@@ -74,6 +74,7 @@ def register_process():
     else:
         driver = Driver.query.filter_by(email=email).first()
         if driver:
+            flash("You have already registered as a driver. Please log in.")
             return redirect('/login')
         new_driver = Driver(email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(new_driver)
@@ -84,7 +85,7 @@ def register_process():
         driver = Driver.query.filter_by(email=email).one()
         #set driver_id
         session["driver_id"] = driver.driver_id
-        return redirect("/drivers")
+        return redirect("/feed")
 
 
 #######################################################################################################
@@ -196,9 +197,7 @@ def rides_list():
         db.session.add(new_ride)
         db.session.commit()
 
-        
 
-        #  #testing with return text
 
         return jsonify({"dicts": "all_rides"})
 

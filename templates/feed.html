@@ -5,7 +5,7 @@
 
     <style>
       #map {
-        width: 500px;
+        width: 650px;
         height: 400px;
       }
     </style>
@@ -68,8 +68,9 @@ Google Maps -->
       function initMap() {
         var mapDiv = document.getElementById('map');
         var map = new google.maps.Map(mapDiv, {
-          center: {lat: 51.507222, lng: -0.1275},
-          zoom: 10
+          center: {lat: 37.768071, lng: -122.437952},
+          zoom: 12,
+        
         });
     
         var styles = 
@@ -159,32 +160,20 @@ map.setOptions({styles: styles});
 
           // Create a marker and set its position.
         var marker = new google.maps.Marker({
-        map: map,
-        position: {lat: 51.795314, lng: -0.554352}, 
-        title: 'Forbidden Forest'
+            position: {lat: 37.761652, lng: -122.425184}, 
+            map: map,
+            title: 'Bi-Rite'
+            
   });
     
    
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var marker = new google.maps.Marker({
-            map: map,
-            position: {lat: 51.504444, lng: -0.125556},
-            title: 'Ministry of Magic'
-            
-            // icon: iconBase + 'schools_maps.png'
+            position: {lat: 37.774021, lng: -122.390316},
+            map: map
+           
 });
-//         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-//         var icons = {
-//             parking: {
-//                 icon: iconBase + 'parking_lot_maps.png'
-//   },
-//             library: {
-//                 icon: iconBase + 'library_maps.png'
-//   },
-//             info: {
-//             icon: iconBase + 'info-i_maps.png'
-//   }
-// };
+
 
         function addMarker(feature) {
             var marker = new google.maps.Marker({
@@ -204,6 +193,8 @@ map.setOptions({styles: styles});
     <!-- jQuery methods here -->
     <!-- Javascript methods here -->
 
+
+
 <script type="text/javascript">
 
 // whenever you click the submit button it will add the location, 
@@ -213,25 +204,12 @@ $('#submit_button').click(function(){
     var passenger_location = $('#location').val();
     var passenger_destination = $('#destination').val();
     var pick_up_time = $('#pick_up_time').val();
-
-    // will split date into day, month, hour, AM/PM.
-    var date = Date.parse(pick_up_time)
-    var date_string = date.getDate()
-    // makes sure it is 12 hours the %12
-    var minutes_string = date.getMinutes()
-    var hour_string = date.getHours() %12 +':'+minutes_string;
-        if (date.getHours() > 12){
-            hour_string += 'PM'}
-            else
-                {hour_string += 'AM'}
-
-        date_string + minutes_string + hour_string
-    // add date_string to minutes_string to hour_string
-    // make array of all month with. get
  
+    var dt = moment(pick_up_time);
 
+    var formatted = dt.format('MMM DD h:mm A');
 
-    $('#feed').append('<li><div>'+passenger_location+'</div><div>'+passenger_destination+'</div><div>'+pick_up_time+'</div></li>');
+    $('#feed').append('<li><div>'+passenger_location+'</div><div>'+passenger_destination+'</div><div>'+formatted+'</div></li>');
      // empties the boxes in html
     $('.feedinput').val('');
 
@@ -240,7 +218,7 @@ $('#submit_button').click(function(){
     console.log(feed_data)
 
     $.post('/rides', feed_data, function(result){
-        console.log(result)
+        console.log(result);
     });
 });
 
