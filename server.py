@@ -74,7 +74,7 @@ def register_process():
     else:
         driver = Driver.query.filter_by(email=email).first()
         if driver:
-            flash("You have already registered as a driver. Please log in.")
+            flash("You have already registered as a passenger. Please log in.")
             return redirect('/login')
         new_driver = Driver(email=email, password=password, firstname=firstname, lastname=lastname)
         db.session.add(new_driver)
@@ -102,6 +102,9 @@ def login_form():
 def login_process():
     """Process login passenger and driver."""
 
+    #clears the session
+    session.clear()
+
     # Get form variables
     email = request.form["email"]
     password = request.form["password"]
@@ -122,7 +125,7 @@ def login_process():
             #using the session dictionary and registering the key and value
             session["passenger_id"] = passenger_user.passenger_id
             #go to the homepage
-            return redirect("/")
+            return redirect("/feed")
         #if the user passengers password is incorrect
         else:
             #alert message that the password is incorrect
@@ -137,7 +140,7 @@ def login_process():
             #using the session dictionary and registering the key and value
             session["driver_id"] = driver_user.driver_id
             #please direct them to the homepage
-            return redirect("/")
+            return redirect("/feed")
         #if the user driver entered in an incorrect password
         else:
             #please alert message them that it was incorrect
@@ -149,7 +152,8 @@ def login_process():
 def logout():
     """Log out."""
 
-    del session["passenger_id"]
+    #clears the session
+    session.clear()
     flash("See you next time! You are logged out.")
     return redirect("/")
 
@@ -167,10 +171,11 @@ def feed_list():
 
 
 ##################################################################################################
-
-@app.route('/rides', methods=['POST', 'GET'])
+# change excisting = PATCH
+@app.route('/rides', methods=['POST'])
 def rides_list():
     """Show feed to passengers and drivers"""
+
 
     #getting information from form
     firstname = request.form.get('firstname')
@@ -178,12 +183,6 @@ def rides_list():
     passenger_location = request.form.get('passenger_location')
     passenger_destination = request.form.get('passenger_destination')
     pick_up_time = request.form.get('pick_up_time')
-
-
-    #test if it's working
-    print passenger_location
-    print passenger_destination
-    print pick_up_time
 
 
     #if there is a passenger_id. Get the id.
@@ -198,17 +197,35 @@ def rides_list():
         db.session.commit()
 
 
+    return jsonify({"dicts": "all_rides"})
 
-        return jsonify({"dicts": "all_rides"})
+###################################################################################################
 
-    #if there is a driver_id. Get the id.
-    # else:
-    #     driver_id = session['driver_id']
-    #     #creating row that has the drivers stored in database
-    #     new_ride = Ride(driver_id=driver_id, passenger_location=passenger_location,
-    #                     passenger_destination=passenger_destination, pick_up_time=pick_up_time,
-    #                     pick_up_date=pick_up_date)
+# get this ride with this id <ride_id>
+@app.route("/rides/<ride_id>", methods=['PATCH', 'GET', 'POST'])
+def update_ride(ride_id):
+    """Rate passsenger and drivers"""
 
+    # will get the ride id from the route. Example: Ride/1
+    ride = Ride.query.get(ride_id)
+
+    #getting the form
+    if request.method == 'GET':
+        return render_template("rating_form.html", ride=ride, session=session)
+    else:
+        passenger_rating = request.form.get('passenger_rating')
+        driver_rating = request.form.get('driver_rating')
+
+        #if passenger rating was in the form then set passenger rating
+        #else if driver rating was in the form set driver rating
+        #DOES NOT check if the user is a driver or a passenger
+        if passenger_rating:
+            ride.passenger_rating = passenger_rating
+        elif driver_rating:
+            ride.driver_rating = driver_rating
+
+        db.session.commit()
+        return redirect("/feed")
 
 
 ###################################################################################################
