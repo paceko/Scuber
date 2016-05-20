@@ -27,10 +27,13 @@
         <ul id='feed'>
             {%for ride in all_rides%}
                 <li>
-                <div> {{ride.passenger_destination}} </div>
-                <div> {{ride.passenger_location}} </div>
+                <div>{{ride.passenger_destination}}</div>
+                <div>{{ride.passenger_location}}</div>
                 <div>{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
+                <div><a href ="{{ "/rides/%s" % ride.ride_id }}"> rate</a>
+                </div>
                 </li>
+
             {%endfor%}
         </ul>
 
@@ -73,17 +76,14 @@ Google Maps -->
         
         });
     
-        var styles = 
-        [
-    {
+        var styles = [{
         "featureType": "administrative",
         "elementType": "labels.text.fill",
         "stylers": [
             {
                 "color": "#444444"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "landscape",
         "elementType": "all",
@@ -91,8 +91,7 @@ Google Maps -->
             {
                 "color": "#f2f2f2"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "poi",
         "elementType": "all",
@@ -100,8 +99,7 @@ Google Maps -->
             {
                 "visibility": "off"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "road",
         "elementType": "all",
@@ -112,8 +110,7 @@ Google Maps -->
             {
                 "lightness": 45
             }
-        ]
-    },
+        ]},
     {
         "featureType": "road.highway",
         "elementType": "all",
@@ -121,8 +118,7 @@ Google Maps -->
             {
                 "visibility": "simplified"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "road.arterial",
         "elementType": "labels.icon",
@@ -130,8 +126,7 @@ Google Maps -->
             {
                 "visibility": "off"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "transit",
         "elementType": "all",
@@ -139,8 +134,7 @@ Google Maps -->
             {
                 "visibility": "off"
             }
-        ]
-    },
+        ]},
     {
         "featureType": "water",
         "elementType": "all",
@@ -152,27 +146,29 @@ Google Maps -->
                 "visibility": "on"
             }
         ]
-    }
-];
+    }];
 
-map.setOptions({styles: styles});
+        map.setOptions({styles: styles});
 
 
           // Create a marker and set its position.
         var marker = new google.maps.Marker({
             position: {lat: 37.761652, lng: -122.425184}, 
             map: map,
-            title: 'Bi-Rite'
+            title: 'Bi-Rite',
+            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
             
-  });
+            });
     
    
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
         var marker = new google.maps.Marker({
             position: {lat: 37.774021, lng: -122.390316},
-            map: map
+            map: map,
+            title: 'Market Hall',
+            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
            
-});
+            });
 
 
         function addMarker(feature) {
@@ -180,7 +176,8 @@ map.setOptions({styles: styles});
                 position: feature.position,
                 icon: icons[feature.type].icon,
                 map: map
-  });
+            });
+           
 }
 
       }
@@ -209,6 +206,7 @@ $('#submit_button').click(function(){
 
     var formatted = dt.format('MMM DD h:mm A');
 
+    // adding address information to the feed
     $('#feed').append('<li><div>'+passenger_location+'</div><div>'+passenger_destination+'</div><div>'+formatted+'</div></li>');
      // empties the boxes in html
     $('.feedinput').val('');

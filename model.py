@@ -52,6 +52,8 @@ class Ride(db.Model):
     passenger_location = db.Column(db.String(100), nullable=False)
     passenger_destination = db.Column(db.String(100), nullable=False)
     pick_up_time = db.Column(db.DateTime, nullable=False)
+    passenger_rating = db.Column(db.Integer, nullable=True)
+    driver_rating = db.Column(db.Integer, nullable=True)
 
 
     #define relationship to the driver
@@ -74,11 +76,12 @@ class Ride(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Ride driver_id=%s passenger_id=%s passenger_location=%s passenger_destination=%s>"
+        return ("<Ride driver_id=%s passenger_id=%s passenger_location=%s passenger_destination=%s passenger_rating=%s>"
                                                             % (self.driver_id,
                                                                 self.passenger_id,
                                                                 self.passenger_location,
-                                                                self.passenger_destination))
+                                                                self.passenger_destination,
+                                                                self.passenger_rating))
 
 ##############################################################################################
 #This passenger is the user
