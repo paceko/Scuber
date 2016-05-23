@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='well spaced' style='width:40%;'>
+<div>
+    <h1>Register Passenger</h1>
+    <form action="/register" method="POST">
+
+        
+        <div class='form-group'>
+            <label>Firstname:
+                <input type='firstname' name='firstname'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Lastname:
+                <input type='lastname' name='lastname'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Email:
+                <input type='email' name='email' >
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Password:
+                <input type='password' name='password'>
+            </label>
+        </div>
+
+        <!-- sent along with form. So on server side we know if it's a passenger  -->
+        <input type='hidden' value='passenger' name='user_type'>
+
+
+        <div class='form-group'>
+            <input type='submit' value='Log In' class='default'>
+        </div>
+
+    </form>
+
+    <h1>Register Driver</h1>
+    <form action="/register" method="POST">
+
+         <div class='form-group'>
+            <label>Firstname:
+                <input type='firstname' name='firstname'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Lastname:
+                <input type='lastname' name='lastname'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Email:
+                <input type='email' name='email'  class='form-control'>
+            </label>
+        </div>
+
+        <div class='form-group'>
+            <label>Password:
+                <input type='password' name='password'  class='form-control'>
+            </label>
+        </div>
+
+        <!-- sent along with form. So on server side we know if it's a driver or a passenger  -->
+        <input type= 'hidden' value='driver' name='user_type'>
+
+
+        <div class='form-group'>
+            <input type='submit' value='Log In' class='default'>
+        </div>
+
+    </form>
+
+       
+</div>
+</div>
+{% endblock %}
