@@ -1,32 +1,32 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class='well spaced' style='width:40%;'>
-<div>
+<h1>Share rides, save time, make new friends</h1>
+<div style="background-image: url('/static/sanfran.jpg');">
+<div class="lineup">
+
     <h1>Register Passenger</h1>
     <form action="/register" method="POST">
-
-        
         <div class='form-group'>
             <label>Firstname:
-                <input type='firstname' name='firstname'>
+                <input type='firstname' name='firstname' class='form-control'>
             </label>
         </div>
 
         <div class='form-group'>
             <label>Lastname:
-                <input type='lastname' name='lastname'>
+                <input type='lastname' name='lastname' class='form-control'>
             </label>
         </div>
 
         <div class='form-group'>
             <label>Email:
-                <input type='email' name='email' >
+                <input type='email' name='email' class='form-control'>
             </label>
         </div>
 
         <div class='form-group'>
             <label>Password:
-                <input type='password' name='password'>
+                <input type='password' name='password' class='form-control'>
             </label>
         </div>
 
@@ -35,23 +35,24 @@
 
 
         <div class='form-group'>
-            <input type='submit' value='Log In' class='default'>
+            <input type='submit' value='Submit' class='register'>
         </div>
 
     </form>
-
+</div>
+<div class="lineup">
     <h1>Register Driver</h1>
     <form action="/register" method="POST">
 
          <div class='form-group'>
             <label>Firstname:
-                <input type='firstname' name='firstname'>
+                <input type='firstname' name='firstname' class='form-control'>
             </label>
         </div>
 
         <div class='form-group'>
             <label>Lastname:
-                <input type='lastname' name='lastname'>
+                <input type='lastname' name='lastname' class='form-control'>
             </label>
         </div>
 
@@ -72,7 +73,7 @@
 
 
         <div class='form-group'>
-            <input type='submit' value='Log In' class='default'>
+            <input type='submit' value='Submit' class="register">
         </div>
 
     </form>

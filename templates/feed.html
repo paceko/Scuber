@@ -25,16 +25,18 @@
 
         <!-- using jinja to make passenger data stay in feed -->
         <ul id='feed'>
-            {%for ride in all_rides%}
+            {% for ride in all_rides %}
                 <li>
-                <div>{{ride.passenger_destination}}</div>
-                <div>{{ride.passenger_location}}</div>
-                <div>{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
-                <div><a href ="{{ "/rides/%s" % ride.ride_id }}"> rate</a>
-                </div>
+                <div class="street_block">{{ride.passenger_location}}</div>
+                <div class="street_block">{{ride.passenger_destination}}</div>
+                <div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
+                <div class="rate_block"><a href ="{{ '/rides/%s' % ride.ride_id }}"> rate</a></div>
+            {% if 'driver_id' in session %}
+                <div class="street_block"><a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a></div>
+            {% endif %}
                 </li>
+            {% endfor %}
 
-            {%endfor%}
         </ul>
 
         <form action="feed" method="POST">
@@ -51,13 +53,13 @@
 
         <input id='pick_up_time' placeholder='pick up'
         type='datetime-local' name="myTextBox"
-        class='feedinput'/>
+        class='feedinput' value=''/>
 
 
         <!-- class is to style the textbox -->
 
         <br/>
-        <button id='submit_button' type='button'  />
+        <button id='submit_button' type='button'  />POST MY RIDE</button>
 
         </form>
 
@@ -140,7 +142,7 @@ Google Maps -->
         "elementType": "all",
         "stylers": [
             {
-                "color": "#a0d3d3"
+                "color": "#c1c2c3"
             },
             {
                 "visibility": "on"
@@ -194,6 +196,30 @@ Google Maps -->
 
 <script type="text/javascript">
 
+// posting the current time in the calendar box (does not work with timezones)
+$(document).ready()
+{
+    var now = new Date($.now())
+        , year
+        , month
+        , date
+        , hours
+        , minutes
+        , seconds
+        , formattedDateTime;
+
+    year = now.getFullYear();
+    month = now.getMonth().toString().length === 1 ? '0' + (now.getMonth() + 1).toString() : now.getMonth() + 1;
+    date = now.getDate().toString().length === 1 ? '0' + (now.getDate()).toString() : now.getDate();
+    hours = now.getHours().toString().length === 1 ? '0' + now.getHours().toString() : now.getHours();
+    minutes = now.getMinutes().toString().length === 1 ? '0' + now.getMinutes().toString() : now.getMinutes();
+    seconds = now.getSeconds().toString().length === 1 ? '0' + now.getSeconds().toString() : now.getSeconds();
+
+    formattedDateTime = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds;
+    $("#pick_up_time").val(formattedDateTime);
+    
+}
+
 // whenever you click the submit button it will add the location, 
 // destination and time to the feed
 $('#submit_button').click(function(){
@@ -207,20 +233,32 @@ $('#submit_button').click(function(){
     var formatted = dt.format('MMM DD h:mm A');
 
     // adding address information to the feed
-    $('#feed').append('<li><div>'+passenger_location+'</div><div>'+passenger_destination+'</div><div>'+formatted+'</div></li>');
-     // empties the boxes in html
-    $('.feedinput').val('');
+  
 
-    // creating keys and values to be stored in the database
     var feed_data = { 'passenger_location': passenger_location, 'passenger_destination': passenger_destination, 'pick_up_time': pick_up_time};
     console.log(feed_data)
 
-    $.post('/rides', feed_data, function(result){
-        console.log(result);
+
+    //.post is "asynchronos", which means "it takes a little while"
+    //immediately after the $.post line in this jQuery, the data from the post is not yet available
+    //using a success function, we can get the result of the .post after it's complete
+    $.post('/rides', feed_data, 
+        function(data, status){
+        //alert("Received " + data); //data is a string version of the ID number newly created
+        $('#feed').append('<li>'
+                    + '<div>'+passenger_location+'</div>'
+                    + '<div>'+passenger_destination+'</div>'
+                    + '<div>'+formatted+'</div>'
+                    + '<div>'+'<a href="/rides/'+data+'">rate</a>'
+                    + '</div>'
+                    + '</li>');
     });
+
+     // empties the boxes in html
+    $('.feedinput').val('');
+
+  
 });
-
-
 
 </script> 
 

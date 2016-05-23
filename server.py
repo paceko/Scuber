@@ -67,9 +67,8 @@ def register_process():
         db.session.commit()
         #alert-message that will give name and email of passenger sign in
         flash("Passenger %s added." % email)
-        passenger = Passenger.query.filter_by(email=email).one()
-        #set passenger_id
-        session["passenger_id"] = passenger.passenger_id
+        # set passenger_id
+        session["passenger_id"] = new_passenger.passenger_id
         return redirect("/feed")
     else:
         driver = Driver.query.filter_by(email=email).first()
@@ -82,7 +81,6 @@ def register_process():
         db.session.commit()
         #alert-message that will give name and email of driver sign in
         flash("Driver %s added." % email)
-        driver = Driver.query.filter_by(email=email).one()
         #set driver_id
         session["driver_id"] = driver.driver_id
         return redirect("/feed")
@@ -165,21 +163,22 @@ def logout():
 def feed_list():
     """Show feed to passengers and drivers"""
 
+    #list of objects
     all_rides = Ride.query.all()
 
     return render_template("feed.html", all_rides=all_rides)
 
 
 ##################################################################################################
-# change excisting = PATCH
+
 @app.route('/rides', methods=['POST'])
 def rides_list():
     """Show feed to passengers and drivers"""
 
 
     #getting information from form
-    firstname = request.form.get('firstname')
-    lastname = request.form.get('lastname')
+    # firstname = request.form.get('firstname')
+    # lastname = request.form.get('lastname')
     passenger_location = request.form.get('passenger_location')
     passenger_destination = request.form.get('passenger_destination')
     pick_up_time = request.form.get('pick_up_time')
@@ -192,17 +191,21 @@ def rides_list():
         new_ride = Ride(passenger_location=passenger_location, passenger_destination=passenger_destination,
         pick_up_time=pick_up_time, passenger_id=passenger_id)
 
-
         db.session.add(new_ride)
+        #db.session.flush()
         db.session.commit()
+        to_return = str(new_ride.ride_id)
+        return to_return # new_ride.to_json
 
-
-    return jsonify({"dicts": "all_rides"})
+    return "failed" #this line should never be reached
+    #jsonify({"new_id": "new_ride.id"})
+    #new_ride.id
+    #jsonify({"dicts": "all_rides"})    " {"dicts": "all_rides"} "
 
 ###################################################################################################
 
 # get this ride with this id <ride_id>
-@app.route("/rides/<ride_id>", methods=['PATCH', 'GET', 'POST'])
+@app.route("/rides/<ride_id>", methods=['GET', 'POST'])
 def update_ride(ride_id):
     """Rate passsenger and drivers"""
 
@@ -230,135 +233,29 @@ def update_ride(ride_id):
 
 ###################################################################################################
 ###################################################################################################
-@app.route("/users")
-def user_list():
-    """Show list of users."""
+@app.route("/claim-rides/<ride_id>", methods=['POST'])
+def claim_ride(ride_id):
+    """Driver can claim passenger ride"""
 
-    users = User.query.all()
-    return render_template("user_list.html", users=users)
-
-
-@app.route("/users/<int:user_id>")
-def user_detail(user_id):
-    """Show info about user."""
-
-    user = User.query.get(user_id)
-    return render_template("user.html", user=user)
+    if 'passenger_id' in session:
+        flash("You are not a driver.")
+        return redirect("/feed")
+    if 'driver_id' in session:
+        # make new template for driver claim YAY
+        ride = Ride.query #FIXME !
+    return " THIS IS THE CLAIM RIDE PAGE :)"
 
 
-@app.route("/movies")
-def movie_list():
-    """Show list of movies."""
-
-    movies = Movie.query.order_by('title').all()
-    return render_template("movie_list.html", movies=movies)
-
-
-@app.route("/movies/<int:movie_id>", methods=['GET'])
-def movie_detail(movie_id):
-    """Show info about movie.
-
-    If a user is logged in, let them add/edit a rating.
-    """
-    print "made it here"
-
-    movie = Movie.query.get(movie_id)
-
-    user_id = session.get("user_id")
-
-    if user_id:
-        user_rating = Rating.query.filter_by(
-            movie_id=movie_id, user_id=user_id).first()
-
-    else:
-        user_rating = None
-
-    # Get average rating of movie
-
-    rating_scores = [r.score for r in movie.ratings]
-    avg_rating = float(sum(rating_scores)) / len(rating_scores)
-
-    prediction = None
-
-    # Prediction code: only predict if the user hasn't rated it.
-
-    if (not user_rating) and user_id:
-        user = User.query.get(user_id)
-        if user:
-            prediction = user.predict_rating(movie)
-
-    # Either use the prediction or their real rating
-
-    if prediction:
-        # User hasn't scored; use our prediction if we made one
-        effective_rating = prediction
-
-    elif user_rating:
-        # User has already scored for real; use that
-        effective_rating = user_rating.score
-
-    else:
-        # User hasn't scored, and we couldn't get a prediction
-        effective_rating = None
-
-    # Get the eye's rating, either by predicting or using real rating
-
-    the_eye = User.query.filter_by(email="the-eye@of-judgment.com").one()
-    eye_rating = Rating.query.filter_by(
-        user_id=the_eye.user_id, movie_id=movie.movie_id).first()
-
-    if eye_rating is None:
-        eye_rating = the_eye.predict_rating(movie)
-
-    else:
-        eye_rating = eye_rating.score
-
-    if eye_rating and effective_rating:
-        difference = abs(eye_rating - effective_rating)
-
-    else:
-        # We couldn't get an eye rating, so we'll skip difference
-        difference = None
-
-    # Depending on how different we are from the Eye, choose a message
-
-    BERATEMENT_MESSAGES = [
-        "I suppose you don't have such bad taste after all.",
-        "I regret every decision that I've ever made that has brought me" +
-            " to listen to your opinion.",
-        "Words fail me, as your taste in movies has clearly failed you.",
-        "Did you watch this movie in an alternate universe where your taste doesn't suck?",
-        "Words cannot express the awfulness of your taste."
-    ]
-
-    if difference is not None:
-        beratement = BERATEMENT_MESSAGES[int(difference)]
-
-    else:
-        beratement = None
-
-    return render_template(
-        "movie.html",
-        movie=movie,
-        user_rating=user_rating,
-        average=avg_rating,
-        prediction=prediction,
-        eye_rating=eye_rating,
-        difference=difference,
-        beratement=beratement
-        )
 
 
 #########################################################################################
 # Debug
 
 if __name__ == "__main__":
+    app.debug = True
     # I am setting debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
-
     # Do not debug for demo
-    app.debug = True
-
     connect_to_db(app)
 
     # Use the DebugToolbar

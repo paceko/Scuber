@@ -1,29 +1,86 @@
 
  /*using new feature flexbox*/
-.mapwrapper{
-	display: flex;
-	justify-content: flex-end;
-	align-items: flex-end;
-	color: black;
+
+
+.lineup
+{
+  vertical-align: text-top;
+  display: inline-block;
+  margin: 20px;
+  padding: 20px;
+  height: 500px;
+  width: 500px;
+  background-color: rgba(120, 120, 120, 0.4);
+  color: white;
 }
 
-/*feed display. Seperating the spaces between the location, destination and time*/
-#feed div{display: inline-block;
-          width: 125px;}
+.lineup h1
+{
+  color: white;
+}
 
+.register
+{
+  color: black;
+}
+
+.feedwrapper
+{
+  height: 400px;
+  margin-left: -20px;
+}
+
+
+.feedinput{ background-color:#75C3BF;
+            color:#FFFFFF;}
+
+/*feed display. Seperating the spaces between the location, destination and time*/
+.street_block /*for the street*/
+{
+  display: inline-block;
+  width: 155px; 
+}
+
+.rate_block
+{
+  display: inline-block;
+  width: 20px;       
+  text-align: right; 
+}
+
+.time_block
+{
+  display: inline-block;
+  width: 130px;        
+}
+
+#feed a 
+{
+  color: #333333;
+}
+
+#feed a:hover
+{
+  color: #888888;
+}
+
+
+.mapwrapper{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  color: black;
+}
 /*get rid of bulletpoints*/
 .mapwrapper ul {
   overflow: scroll;
 	list-style: none;
 	background-color:#3EABA6;
 	color:#FFFFFF;
-	max-width: 460px;
+	max-width: 560px;
 	height: 400px;
 }
 
-.feedwrapper{ height: 400px;}
-.feedinput{ background-color:#75C3BF;
-            color:#FFFFFF;}
 
 
 h1, h2, h3, .navbar-brand { font-family: "ntr";
