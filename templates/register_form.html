@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>Share rides, save time, make new friends</h1>
-<div style="background-image: url('/static/sanfran.jpg');">
+
+<div style="background-image: url('/static/color_register.jpg');">
 <div class="lineup">
 
     <h1>Register Passenger</h1>
@@ -10,23 +10,24 @@
             <label>Firstname:
                 <input type='firstname' name='firstname' class='form-control'>
             </label>
-        </div>
-
-        <div class='form-group'>
             <label>Lastname:
                 <input type='lastname' name='lastname' class='form-control'>
             </label>
         </div>
 
+
         <div class='form-group'>
             <label>Email:
                 <input type='email' name='email' class='form-control'>
             </label>
-        </div>
-
-        <div class='form-group'>
             <label>Password:
                 <input type='password' name='password' class='form-control'>
+            </label>
+        </div>
+
+         <div class='form-group'>
+            <label>Phone number:
+                <input type='phonenumber' name='phonenumber' class='form-control'>
             </label>
         </div>
 
@@ -45,13 +46,10 @@
     <form action="/register" method="POST">
 
          <div class='form-group'>
-            <label>Firstname:
+            <label>First name:
                 <input type='firstname' name='firstname' class='form-control'>
             </label>
-        </div>
-
-        <div class='form-group'>
-            <label>Lastname:
+             <label>Last name:
                 <input type='lastname' name='lastname' class='form-control'>
             </label>
         </div>
@@ -60,11 +58,14 @@
             <label>Email:
                 <input type='email' name='email'  class='form-control'>
             </label>
+             <label>Password:
+                <input type='password' name='password'  class='form-control'>
+            </label>
         </div>
 
         <div class='form-group'>
-            <label>Password:
-                <input type='password' name='password'  class='form-control'>
+            <label>Phone number:
+                <input type='phonenumber' name='phonenumber' class='form-control'>
             </label>
         </div>
 

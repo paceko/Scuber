@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="lineup">
+<h3>You claimed a ride from: </h3>
+
+<form action="login" method="POST">
+
+    <div class="form-group">
+        <label>
+            Location
+            <input type="location" class="form-control" value="{{ride.passenger_location}}">
+        </label>
+         <label>
+            Destination
+            <input type="destination" class="form-control" value="{{ride.passenger_destination}}">
+        </label>
+    </div>
+
+    <div class="form-group">
+        <label>
+            Pick-up Time
+            <input type="pick up time" class="form-control"  value="{{ride.pick_up_time}}">
+        </label>
+    </div>
+
+
+<h3>Your passenger:</h3>
+    <div class="form-group">
+        <label>
+            First name
+            <input type="firstname" class="form-control" value="{{passenger.firstname}}">
+        </label>
+        <label>
+            Last name
+            <input type="lastname" class="form-control" value="{{passenger.lastname}}">
+        </label>
+    </div>
+
+ <div class="form-group">
+        <label>
+            Phone number
+            <input type="phone number" class="form-control"  value="{{passenger.phonenumber}}">
+        </label>
+    </div>
+    
+
+</form>
+</div>
+{% endblock %}

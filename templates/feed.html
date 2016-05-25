@@ -66,12 +66,40 @@
     </div>
 </div>
 
-<!-- #############################################################
+<!-- ######################################################################################################
 Google Maps -->
 
     <script>
-      function initMap() {
+        var windowLoaded = 0;
+        var mapLoaded = 0;
+
+        //calls when the window finishes loading
+        //may be before or after the script loads, which means the map may or may not exist
+        window.onload = function() 
+        {
+            windowLoaded == 1;
+            if(mapLoaded == 1) //if the map script has already loaded, initialize it
+            {
+                initMap();
+            }
+        };
+
+        //calls when the script finishes loading
+        function mapScriptLoaded()
+        {
+            mapLoaded = 1;
+            if(windowLoaded == 1) //if the window has already loaded, initialize the map
+            {
+                initMap();
+            }
+        }
+
+        //loading the script for the map completes, then the map gets made
+        //initmap creates events that refer to the map variable, so it map variable persists without being global
+      function initMap() 
+      {
         var mapDiv = document.getElementById('map');
+        //if the map is created here, there's no access to it in window.onload
         var map = new google.maps.Map(mapDiv, {
           center: {lat: 37.768071, lng: -122.437952},
           zoom: 12,
@@ -150,27 +178,16 @@ Google Maps -->
         ]
     }];
 
+
         map.setOptions({styles: styles});
 
 
           // Create a marker and set its position.
-        var marker = new google.maps.Marker({
-            position: {lat: 37.761652, lng: -122.425184}, 
-            map: map,
-            title: 'Bi-Rite',
-            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
-            
-            });
-    
+   
+
    
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-        var marker = new google.maps.Marker({
-            position: {lat: 37.774021, lng: -122.390316},
-            map: map,
-            title: 'Market Hall',
-            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
-           
-            });
+
 
 
         function addMarker(feature) {
@@ -179,16 +196,56 @@ Google Maps -->
                 icon: icons[feature.type].icon,
                 map: map
             });
-           
-}
+        
+        }
 
-      }
+
+            var loc = document.getElementById("location");
+            var dest = document.getElementById("destination");
+            loc.onblur = function () 
+            { 
+                var title = loc.value;
+                //look up coords for title + ", san francisco"
+                var coordsx = 37.774021;
+                var coordsy = -122.390316;
+
+                var marker = new google.maps.Marker({
+                    position: {lat: coordsx, lng: coordsy},
+                    map: map,
+                    title: title,
+                    icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+           
+                });            
+            };
+            dest.onblur = function () 
+            { 
+                var title = dest.value;
+                //look up coords for title + ", san francisco"              
+                var coordsx = 37.761652;
+                var coordsy = -122.425184;
+
+
+                var marker = new google.maps.Marker({
+                position: {lat: coordsx, lng: coordsy},
+                map: map,
+                title: title,
+                icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+            
+            });
+            };
+
+
+      } //close init map
+
+
+
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?callback=mapScriptLoaded"
         async defer></script>
 
   </body>
 
+<!-- ############################################################################################################# -->
     <!-- jQuery methods here -->
     <!-- Javascript methods here -->
 
@@ -246,11 +303,11 @@ $('#submit_button').click(function(){
         function(data, status){
         //alert("Received " + data); //data is a string version of the ID number newly created
         $('#feed').append('<li>'
-                    + '<div>'+passenger_location+'</div>'
-                    + '<div>'+passenger_destination+'</div>'
-                    + '<div>'+formatted+'</div>'
-                    + '<div>'+'<a href="/rides/'+data+'">rate</a>'
-                    + '</div>'
+                    + '<div class = "street_block">'+passenger_location+'</div>'
+                    + '<div class = "street_block">'+passenger_destination+'</div>'
+                    + '<div class = "time_block">'+formatted+'</div>'
+                    + '<div class = "rate_block">'+'<a href="/rides/'+data+'">rate</a></div>'
+                    + '<div class = "street_block">'+'<a href="/claim-rides/'+data+'">claim</a></div>'
                     + '</li>');
     });
 

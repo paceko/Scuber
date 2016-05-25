@@ -26,7 +26,8 @@ def index():
 
     #show me the register page
 
-    return redirect("/register")
+    return render_template("homepage.html")
+    # return redirect("/register")
 
 
 #making a connection to register
@@ -49,6 +50,7 @@ def register_process():
     password = request.form.get("password")
     firstname = request.form.get("firstname")
     lastname = request.form.get("lastname")
+    phonenumber = request.form.get("phonenumber")
 
     # we don't want to have 2 people checking in under same address
     print request.form['user_type']
@@ -61,7 +63,7 @@ def register_process():
         if passenger:
             flash("You have already registered as a passenger. Please log in.")
             return redirect('/login')
-        new_passenger = Passenger(email=email, password=password, firstname=firstname, lastname=lastname)
+        new_passenger = Passenger(email=email, password=password, firstname=firstname, lastname=lastname, phonenumber=phonenumber)
         db.session.add(new_passenger)
         #committing the new driver and passenger to the db
         db.session.commit()
@@ -75,14 +77,14 @@ def register_process():
         if driver:
             flash("You have already registered as a passenger. Please log in.")
             return redirect('/login')
-        new_driver = Driver(email=email, password=password, firstname=firstname, lastname=lastname)
+        new_driver = Driver(email=email, password=password, firstname=firstname, lastname=lastname, phonenumber=phonenumber)
         db.session.add(new_driver)
         #committing the new driver and passenger to the db
         db.session.commit()
         #alert-message that will give name and email of driver sign in
         flash("Driver %s added." % email)
         #set driver_id
-        session["driver_id"] = driver.driver_id
+        session["driver_id"] = new_driver.driver_id #driver.driver_id
         return redirect("/feed")
 
 
@@ -165,6 +167,9 @@ def feed_list():
 
     #list of objects
     all_rides = Ride.query.all()
+    #all_passengers = Passenger.query.all()
+
+    #Passenger.query.filter_by(email=email).first()
 
     return render_template("feed.html", all_rides=all_rides)
 
@@ -175,7 +180,7 @@ def feed_list():
 def rides_list():
     """Show feed to passengers and drivers"""
 
-
+    print request.form
     #getting information from form
     # firstname = request.form.get('firstname')
     # lastname = request.form.get('lastname')
@@ -185,8 +190,11 @@ def rides_list():
 
 
     #if there is a passenger_id. Get the id.
+    print session
+
     if 'passenger_id' in session:
         passenger_id = session['passenger_id']
+        print passenger_id
         #creating row that has the passengers stored in database
         new_ride = Ride(passenger_location=passenger_location, passenger_destination=passenger_destination,
         pick_up_time=pick_up_time, passenger_id=passenger_id)
@@ -195,15 +203,13 @@ def rides_list():
         #db.session.flush()
         db.session.commit()
         to_return = str(new_ride.ride_id)
+        print to_return
         return to_return # new_ride.to_json
 
     return "failed" #this line should never be reached
     #jsonify({"new_id": "new_ride.id"})
     #new_ride.id
     #jsonify({"dicts": "all_rides"})    " {"dicts": "all_rides"} "
-
-
-###################################################################################################
 
 ###################################################################################################
 
@@ -236,18 +242,34 @@ def update_ride(ride_id):
 
 ###################################################################################################
 ###################################################################################################
-@app.route("/claim-rides/<ride_id>", methods=['POST'])
+@app.route("/claim-rides/<ride_id>", methods=['GET'])
 def claim_ride(ride_id):
     """Driver can claim passenger ride"""
 
+    # flash("Claiming ride...")
+    '''
     if 'passenger_id' in session:
         flash("You are not a driver.")
         return redirect("/feed")
+    '''
     if 'driver_id' in session:
         # make new template for driver claim YAY
-        ride = Ride.query #FIXME !
-    return " THIS IS THE CLAIM RIDE PAGE :)"
+        my_ride = Ride.query.get(ride_id) #FIXME !
 
+        driver_id = session["driver_id"]
+        passenger = Passenger.query.get(my_ride.passenger_id)
+        driver = Driver.query.get(driver_id)
+
+        #attach driver to this ride
+        my_ride.driver_id = driver_id
+
+        db.session.add(my_ride)
+        db.session.commit()
+        flash("Passenger: " + str(passenger.passenger_id))
+
+        #THIS IS THE CLAIM RIDE PAGE
+           
+    return render_template("claim.html", ride=my_ride, passenger=passenger)
 
 
 

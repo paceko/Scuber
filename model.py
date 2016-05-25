@@ -97,15 +97,17 @@ class Passenger(db.Model):
     password = db.Column(db.String(50), nullable=False)
     firstname = db.Column(db.String(30), nullable=False)
     lastname = db.Column(db.String(30), nullable=False)
+    phonenumber = db.Column(db.String(15), nullable=False)
 
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Passenger passenger_id=%s firstname=%s lastname=%s email=%s password=%s>"
+        return ("<Passenger passenger_id=%s firstname=%s lastname=%s email=%s password=%s phonenumber=%s>"
                                                             % (self.passenger_id,
                                                                 self.firstname,
-                                                                self.lastname))
+                                                                self.lastname,
+                                                                self.phonenumber))
 
 ##############################################################################################
 # This driver is the second user
@@ -121,15 +123,17 @@ class Driver(db.Model):
     password = db.Column(db.String(50), nullable=False)
     firstname = db.Column(db.String(30), nullable=False)
     lastname = db.Column(db.String(30), nullable=False)
+    phonenumber = db.Column(db.String(15), nullable=False)
 
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Driver driver_id=%s firstname=%s lastname=%s driver_location%s>"
+        return ("<Driver driver_id=%s firstname=%s lastname=%s driver_location%s phonenumber=%s>"
                                                             % (self.driver_id,
                                                                 self.firstname,
                                                                 self.lastname,
-                                                                self.driver_location))
+                                                                self.driver_location,
+                                                                self.phonenumber))
 
 ############################################################################################
 # Helper functions
