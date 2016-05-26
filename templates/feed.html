@@ -65,6 +65,7 @@
 
     </div>
 </div>
+<div id="outinfo">RESULT----</div>
 
 <!-- ######################################################################################################
 Google Maps -->
@@ -184,11 +185,7 @@ Google Maps -->
 
           // Create a marker and set its position.
    
-
-   
         var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-
-
 
         function addMarker(feature) {
             var marker = new google.maps.Marker({
@@ -198,40 +195,62 @@ Google Maps -->
             });
         
         }
-
+            //create marker 1 and 2 
+            var marker1;
+            var marker2;
 
             var loc = document.getElementById("location");
             var dest = document.getElementById("destination");
             loc.onblur = function () 
             { 
                 var title = loc.value;
-                //look up coords for title + ", san francisco"
-                var coordsx = 37.774021;
-                var coordsy = -122.390316;
-
-                var marker = new google.maps.Marker({
-                    position: {lat: coordsx, lng: coordsy},
-                    map: map,
-                    title: title,
-                    icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+                //look up coordinates for title + ", san francisco"
+                var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
+                    + title + " san francisco" + "&key=AIzaSyB_MPHVLyO6buf5XC0xuE6ssrhOXTUSxiw";
+                $.ajax({type: "GET", url: myUrl, dataType: 'json'
+                    }).done(function(result) 
+                    {
+                        var coordsx = parseFloat(result.results[0].geometry.location.lat);
+                        var coordsy = parseFloat(result.results[0].geometry.location.lng);
+                        if(typeof marker1 != "undefined")
+                        {
+                            marker1.setMap(null);    
+                        }
+                        marker1 = new google.maps.Marker({
+                            position: {lat: coordsx, lng: coordsy},
+                            map: map,
+                            title: title,
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
            
-                });            
+                        });    
+                         
+                    });
             };
             dest.onblur = function () 
             { 
                 var title = dest.value;
-                //look up coords for title + ", san francisco"              
-                var coordsx = 37.761652;
-                var coordsy = -122.425184;
+             
+                var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
+                    + title + " san francisco" + "&key=AIzaSyB_MPHVLyO6buf5XC0xuE6ssrhOXTUSxiw";
+                $.ajax({type: "GET", url: myUrl, dataType: 'json'
+                    }).done(function(result) 
+                    {
+                        var coordsx = parseFloat(result.results[0].geometry.location.lat);
+                        var coordsy = parseFloat(result.results[0].geometry.location.lng);
+                        //marker2.setPosition(new google.maps.LatLng(coordsx, coordsy));
+                        if(typeof marker2 != "undefined")
+                        {
+                            marker2.setMap(null);    
+                        }
+                        marker2 = new google.maps.Marker({
+                            position: {lat: coordsx, lng: coordsy},
+                            map: map,
+                            title: title,
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+           
+                        });    
 
-
-                var marker = new google.maps.Marker({
-                position: {lat: coordsx, lng: coordsy},
-                map: map,
-                title: title,
-                icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
-            
-            });
+                    });
             };
 
 

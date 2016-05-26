@@ -167,9 +167,6 @@ def feed_list():
 
     #list of objects
     all_rides = Ride.query.all()
-    #all_passengers = Passenger.query.all()
-
-    #Passenger.query.filter_by(email=email).first()
 
     return render_template("feed.html", all_rides=all_rides)
 
@@ -182,8 +179,6 @@ def rides_list():
 
     print request.form
     #getting information from form
-    # firstname = request.form.get('firstname')
-    # lastname = request.form.get('lastname')
     passenger_location = request.form.get('passenger_location')
     passenger_destination = request.form.get('passenger_destination')
     pick_up_time = request.form.get('pick_up_time')
@@ -207,9 +202,7 @@ def rides_list():
         return to_return # new_ride.to_json
 
     return "failed" #this line should never be reached
-    #jsonify({"new_id": "new_ride.id"})
-    #new_ride.id
-    #jsonify({"dicts": "all_rides"})    " {"dicts": "all_rides"} "
+  
 
 ###################################################################################################
 
@@ -268,7 +261,7 @@ def claim_ride(ride_id):
         flash("Passenger: " + str(passenger.passenger_id))
 
         #THIS IS THE CLAIM RIDE PAGE
-           
+
     return render_template("claim.html", ride=my_ride, passenger=passenger)
 
 
