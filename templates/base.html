@@ -48,10 +48,15 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse"
              id="bs-example-navbar-collapse-1">
+
             <ul class="nav navbar-nav">
-                <li><a href="/register">Register</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/logout">Logout</a></li>
+                {% if "driver_id" in session or "passenger_id" in session %}
+                    <li><a href="/logout">Logout</a></li>
+                    <li><a href="/feed">Feed</a></li>
+                {% else %}
+                    <li><a href="/register">Register</a></li>
+                    <li><a href="/login">Login</a></li>
+                {% endif %}
             </ul>
          
         

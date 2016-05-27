@@ -24,13 +24,11 @@
     <div class='feedwrapper'>
 
         <!-- using jinja to make passenger data stay in feed -->
+        <!-- from server to page. Thing that you see first. -->
         <ul id='feed'>
             {% for ride in all_rides %}
                 <li>
-                <div class="street_block">{{ride.passenger_location}}</div>
-                <div class="street_block">{{ride.passenger_destination}}</div>
-                <div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
-                <div class="rate_block"><a href ="{{ '/rides/%s' % ride.ride_id }}"> rate</a></div>
+                <div class="street_block">{{ride.passenger_location}}</div><div class="street_block">{{ride.passenger_destination}}</div><div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div><div class="rate_block"><a href ="{{ '/rides/%s' % ride.ride_id }}">rate</a></div>
             {% if 'driver_id' in session %}
                 <div class="street_block"><a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a></div>
             {% endif %}
@@ -65,7 +63,7 @@
 
     </div>
 </div>
-<div id="outinfo">RESULT----</div>
+<!-- <div id="outinfo">RESULT----</div> -->
 
 <!-- ######################################################################################################
 Google Maps -->
@@ -198,15 +196,17 @@ Google Maps -->
             //create marker 1 and 2 
             var marker1;
             var marker2;
-
+            // binding 2 DOM elements to 2 variables
             var loc = document.getElementById("location");
             var dest = document.getElementById("destination");
+            // when var loc and var dest are done then go do this event
             loc.onblur = function () 
             { 
                 var title = loc.value;
                 //look up coordinates for title + ", san francisco"
+                // I know this key shouldn't be in here but this is just showing for demo
                 var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + title + " san francisco" + "&key=AIzaSyB_MPHVLyO6buf5XC0xuE6ssrhOXTUSxiw";
+                    + title + "san francisco" + "&key=AIzaSyB_MPHVLyO6buf5XC0xuE6ssrhOXTUSxiw";
                 $.ajax({type: "GET", url: myUrl, dataType: 'json'
                     }).done(function(result) 
                     {
@@ -226,6 +226,7 @@ Google Maps -->
                          
                     });
             };
+
             dest.onblur = function () 
             { 
                 var title = dest.value;
@@ -269,10 +270,11 @@ Google Maps -->
     <!-- Javascript methods here -->
 
 
+<!-- #############################################################################################################
+### posting the current time in the calendar box for ease of use for passengers (does not work with timezones)-->
 
 <script type="text/javascript">
 
-// posting the current time in the calendar box (does not work with timezones)
 $(document).ready()
 {
     var now = new Date($.now())
@@ -295,6 +297,7 @@ $(document).ready()
     $("#pick_up_time").val(formattedDateTime);
     
 }
+// #############################################################################################################
 
 // whenever you click the submit button it will add the location, 
 // destination and time to the feed
@@ -303,7 +306,7 @@ $('#submit_button').click(function(){
     var passenger_location = $('#location').val();
     var passenger_destination = $('#destination').val();
     var pick_up_time = $('#pick_up_time').val();
- 
+
     var dt = moment(pick_up_time);
 
     var formatted = dt.format('MMM DD h:mm A');
@@ -321,16 +324,17 @@ $('#submit_button').click(function(){
     $.post('/rides', feed_data, 
         function(data, status){
         //alert("Received " + data); //data is a string version of the ID number newly created
+        console.log(status)
+
         $('#feed').append('<li>'
                     + '<div class = "street_block">'+passenger_location+'</div>'
                     + '<div class = "street_block">'+passenger_destination+'</div>'
                     + '<div class = "time_block">'+formatted+'</div>'
                     + '<div class = "rate_block">'+'<a href="/rides/'+data+'">rate</a></div>'
-                    + '<div class = "street_block">'+'<a href="/claim-rides/'+data+'">claim</a></div>'
                     + '</li>');
     });
 
-     // empties the boxes in html
+     // empties the input boxes (location, destination) in html
     $('.feedinput').val('');
 
   

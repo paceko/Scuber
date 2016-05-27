@@ -140,12 +140,14 @@ def login_process():
             #using the session dictionary and registering the key and value
             session["driver_id"] = driver_user.driver_id
             #please direct them to the homepage
+
             return redirect("/feed")
         #if the user driver entered in an incorrect password
         else:
             #please alert message them that it was incorrect
             flash("Incorrect password")
             #and redirect them to the login page
+
             return redirect("/login")
 
 @app.route('/logout')
@@ -197,12 +199,14 @@ def rides_list():
         db.session.add(new_ride)
         #db.session.flush()
         db.session.commit()
-        to_return = str(new_ride.ride_id)
-        print to_return
-        return to_return # new_ride.to_json
+        ride_return = str(new_ride.ride_id)
+        print ride_return
+
+        return  ride_return
+
 
     return "failed" #this line should never be reached
-  
+
 
 ###################################################################################################
 
