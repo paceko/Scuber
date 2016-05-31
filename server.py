@@ -9,6 +9,7 @@ from model import connect_to_db, db, Driver, Ride, Passenger
 
 from datetime import datetime
 
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -167,10 +168,23 @@ def feed_list():
     """Show feed to passengers and drivers"""
 
     #list of objects that have no driver assigned yet
-    all_rides = Ride.query.filter_by(driver_id=None).all() # SELECT * FROM rides WHERE driver=null;
+    # all_rides = Ride.query.filter_by(driver_id=None).all() # SELECT * FROM rides WHERE driver=null;
+    # rides=# select * from rides join passengers on passengers.passenger_id=rides.passenger_id
+    # select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id;
+    # select * from rides join rides.passenger_id on (
+    # select * from (select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id > 0;
+    cmd = 'select * from (select passenger_id, avg(passenger_rating) as avg_rating from rides where passenger_rating > 0 group by passenger_id) sq join rides on sq.passenger_id=rides.passenger_id;' #WHERE rides.driver_id > 0
+    all_rides = db.engine.execute(cmd)
 
+    #all_rides = Ride.query.all()
+    # scores = []
+    # for ride in all_rides:
+    #     total = 0
+    #     for p_ride in ride.passenger.rides:
+    #         total += p_ride.passenger_rating
+    #     scores.append(total/len(ride.passenger.rides))
 
-    return render_template("feed.html", all_rides=all_rides)
+    return render_template("feed.html", all_rides=all_rides) #scores=scores
 
 
 ##################################################################################################
@@ -283,7 +297,7 @@ def overview():
     if 'driver_id' in session:
         driver_id = session['driver_id']
         print driver_id
-               
+
     all_driver_rides = Ride.query.filter_by(driver_id=driver_id).order_by(Ride.ride_id.asc()).all() # SELECT * FROM rides WHERE driver=null;
     all_passenger_rides = Ride.query.filter_by(passenger_id=passenger_id).order_by(Ride.ride_id.asc()).all() # SELECT * FROM rides WHERE driver=null;
 

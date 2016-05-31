@@ -56,7 +56,13 @@
 .street_block /*for the street*/
 {
   display: inline-block;
-  width: 155px; 
+  width: 150px; 
+}
+
+.tiny_block /*for the street*/
+{
+  display: inline-block;
+  width: 35px; 
 }
 
 .rate_block
@@ -69,7 +75,7 @@
 .time_block
 {
   display: inline-block;
-  width: 130px;        
+  width: 120px;        
 }
 
 #feed a 

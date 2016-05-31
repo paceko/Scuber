@@ -128,7 +128,7 @@ class Driver(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Driver driver_id=%s firstname=%s lastname=%s driver_location%s phonenumber=%s>"
+        return ("<Driver driver_id=%s firstname=%s lastname=%s driver_location%s >"
                                                             % (self.driver_id,
                                                                 self.firstname,
                                                                 self.lastname,

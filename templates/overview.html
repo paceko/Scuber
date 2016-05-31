@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="backdrop">
+<h3>Your claimed rides: </h3>
+
+<!-- logged in as driver, shows all passengers that have been driven & the rating the driver (you) gave them -->
+	{% for driven in all_driver_rides %}
+	RIDE ID#: {{driven.ride_id}}<br>
+		FROM: {{driven.passenger_location}}<br> 
+		TO: {{driven.passenger_destination}}<br>
+		You Rated the Passenger: {{driven.passenger_rating}} <br>
+		<a href="/rides/{{driven.ride_id}}">RATE THIS PASSENGER</a><br><br>
+
+    {% endfor %}
+
+
+<!-- logged in as passenger, shows all drivers that you rode with & the rating the passenger (you) gave them -->
+
+	{% for rode in all_passenger_rides %}
+	RIDE ID#{{rode.ride_id}}<br>
+	   FROM: {{rode.passenger_location}}<br> 
+	   TO: {{rode.passenger_destination}}<br>
+	   You Rated the Driver: {{rode.driver_rating}} <br>
+		<a href="/rides/{{rode.ride_id}}">RATE THIS DRIVER</a><br><br>
+
+    {% endfor %}
+
+
+
+    
+</div>
+{% endblock %}

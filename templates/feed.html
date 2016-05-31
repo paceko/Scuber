@@ -5,7 +5,7 @@
 
     <style>
       #map {
-        width: 650px;
+        width: 500px;
         height: 400px;
       }
     </style>
@@ -26,9 +26,28 @@
         <!-- using jinja to make passenger data stay in feed -->
         <!-- from server to page. Thing that you see first. -->
         <ul id='feed'>
+
+                <li>
+                <div class="street_block">From</div>
+                <div class="street_block">To</div>
+                <div class="time_block">When</div>
+                <div class="tiny_block">Star</div>
+
+                <div class="rate_block">
+            {% if 'driver_id' in session %}
+                Claim
+            {% endif %}
+                </div></li>
+
+
             {% for ride in all_rides %}
                 <li>
-                <div class="street_block">{{ride.passenger_location}}</div><div class="street_block">{{ride.passenger_destination}}</div><div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div><div class="rate_block">
+                <div class="street_block">{{ride.passenger_location}}</div>
+                <div class="street_block">{{ride.passenger_destination}}</div>
+                <div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
+                <div class="tiny_block">{{ "{0:0.1f}".format(ride.avg_rating) }}</div>
+
+                <div class="rate_block">
             {% if 'driver_id' in session %}
                 <a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a>
             {% endif %}
@@ -37,6 +56,8 @@
 
         </ul>
 
+
+                    {% if not 'driver_id' in session %}
         <form action="feed" method="POST">
         <input id='location' placeholder='location'
         type='text' name="myTextBox"
@@ -53,13 +74,14 @@
         type='datetime-local' name="myTextBox"
         class='feedinput' value=''/>
 
-
         <!-- class is to style the textbox -->
 
         <br/>
+
         <button id='submit_button' type='button'  />POST MY RIDE</button>
 
         </form>
+            {% endif %}
 
     </div>
 </div>
@@ -322,6 +344,7 @@ $(document).ready()
 // destination and time to the feed
 $('#submit_button').click(function(){
 // grabbing location unit from html
+
     var passenger_location = $('#location').val();
     var passenger_destination = $('#destination').val();
     var pick_up_time = $('#pick_up_time').val();
