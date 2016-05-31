@@ -2,6 +2,21 @@
 
 /*##################################################################################################################*/
  /*using new feature flexbox*/
+
+
+.backdrop
+{
+  vertical-align: text-top;
+  display: inline-block;
+  margin: 20px;
+  padding: 20px;
+  width: 500px;
+  background-color: rgba(120, 120, 120, 0.4);
+  color: white;
+  font-weight: 900;
+  font-size: 16px;
+}
+
 .lineup
 {
   vertical-align: text-top;
@@ -31,8 +46,11 @@
 }
 
 
-.feedinput{ background-color:#435673;
-            color:#FFFFFF;}
+.feedinput{ 
+  background-color:#435673;
+            color:#FFFFFF;
+            height: 50px;
+          }
 
 /*feed display. Seperating the spaces between the location, destination and time*/
 .street_block /*for the street*/

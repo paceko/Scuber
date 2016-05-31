@@ -28,11 +28,11 @@
         <ul id='feed'>
             {% for ride in all_rides %}
                 <li>
-                <div class="street_block">{{ride.passenger_location}}</div><div class="street_block">{{ride.passenger_destination}}</div><div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div><div class="rate_block"><a href ="{{ '/rides/%s' % ride.ride_id }}">rate</a></div>
+                <div class="street_block">{{ride.passenger_location}}</div><div class="street_block">{{ride.passenger_destination}}</div><div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div><div class="rate_block">
             {% if 'driver_id' in session %}
-                <div class="street_block"><a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a></div>
+                <a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a>
             {% endif %}
-                </li>
+                </div></li>
             {% endfor %}
 
         </ul>
@@ -63,7 +63,7 @@
 
     </div>
 </div>
-<!-- <div id="outinfo">RESULT----</div> -->
+
 
 <!-- ######################################################################################################
 Google Maps -->
@@ -104,6 +104,12 @@ Google Maps -->
           zoom: 12,
         
         });
+
+        var directionsService = new google.maps.DirectionsService;
+        var directionsDisplay = new google.maps.DirectionsRenderer({
+            suppressMarkers: true
+        });
+        directionsDisplay.setMap(map);
     
         var styles = [{
         "featureType": "administrative",
@@ -250,6 +256,19 @@ Google Maps -->
                             icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
            
                         });    
+
+                        directionsService.route({
+                            origin: loc.value + ", san francisco",
+                            destination: dest.value + ", san francisco",
+                            travelMode: google.maps.TravelMode.BICYCLING
+                        }, function(response, status) {
+                            if(status === google.maps.DirectionsStatus.OK) {
+                                directionsDisplay.setDirections(response);
+                            } else {
+                                window.alert("Directions failed due to " + status);
+                            }
+                        }
+                        );
 
                     });
             };
