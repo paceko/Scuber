@@ -31,10 +31,11 @@
                 <div class="street_block">From</div>
                 <div class="street_block">To</div>
                 <div class="time_block">When</div>
-                <div class="tiny_block">Star</div>
+                
 
                 <div class="rate_block">
             {% if 'driver_id' in session %}
+                <div class="tiny_block">Star</div>
                 Claim
             {% endif %}
                 </div></li>
@@ -45,10 +46,11 @@
                 <div class="street_block">{{ride.passenger_location}}</div>
                 <div class="street_block">{{ride.passenger_destination}}</div>
                 <div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
-                <div class="tiny_block">{{ "{0:0.1f}".format(ride.avg_rating) }}</div>
+                
 
                 <div class="rate_block">
             {% if 'driver_id' in session %}
+                <div class="tiny_block">{% if ride.avg_rating %} {{ ride.avg_rating | round }} {% else %} none {% endif %} </div>
                 <a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a>
             {% endif %}
                 </div></li>

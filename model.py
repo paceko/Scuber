@@ -10,34 +10,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-#############################################################################
-# Model definitions
-# Part 1: Compose ORM
-
-# class User(db.Model):
-#     """Users (both passengers and drivers) of Scuber website."""
-
-#     __tablename__ = "users"
-
-#     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     email = db.Column(db.String(50), nullable=False)
-#     password = db.Column(db.String(50), nullable=False)
-#     #placed first and last name here because both drivers and passengers needs these
-#     firstname = db.Column(db.String(30), nullable=False)
-#     lastname = db.Column(db.String(30), nullable=False)
-
-#     #define relationship to the driver
-#     driver = db.relationship("Driver", backref="user")
-
-#     # #define relationship to the passenger
-#     # passenger = db.relationship("Passenger", backref="user")
-
-
-#     def __repr__(self):
-#         """Provide helpful representation when printed."""
-
-#         return "<User user_id=%s email=%s>" % (self.user_id, self.email)
-
 ##############################################################################################
 # This passenger is the user
 

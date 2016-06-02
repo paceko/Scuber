@@ -173,7 +173,7 @@ def feed_list():
     # select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id;
     # select * from rides join rides.passenger_id on (
     # select * from (select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id > 0;
-    cmd = 'select * from (select passenger_id, avg(passenger_rating) as avg_rating from rides where passenger_rating > 0 group by passenger_id) sq join rides on sq.passenger_id=rides.passenger_id;' #WHERE rides.driver_id > 0
+    cmd = 'select * from (select passenger_id, avg(passenger_rating) as avg_rating from rides where (passenger_rating > 0 or passenger_rating is null) group by passenger_id ) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id is null;'
     all_rides = db.engine.execute(cmd)
 
     #all_rides = Ride.query.all()
@@ -183,6 +183,7 @@ def feed_list():
     #     for p_ride in ride.passenger.rides:
     #         total += p_ride.passenger_rating
     #     scores.append(total/len(ride.passenger.rides))
+
 
     return render_template("feed.html", all_rides=all_rides) #scores=scores
 
@@ -258,11 +259,7 @@ def claim_ride(ride_id):
     """Driver can claim passenger ride"""
 
     # flash("Claiming ride...")
-    '''
-    if 'passenger_id' in session:
-        flash("You are not a driver.")
-        return redirect("/feed")
-    '''
+    
     if 'driver_id' in session:
         # make new template for driver claim YAY
         my_ride = Ride.query.get(ride_id) #FIXME !
@@ -293,13 +290,13 @@ def overview():
 
     if 'passenger_id' in session:
         passenger_id = session['passenger_id']
-        print passenger_id
+        print 'passenger ', passenger_id
     if 'driver_id' in session:
         driver_id = session['driver_id']
-        print driver_id
+        print 'driver ', driver_id
 
     all_driver_rides = Ride.query.filter_by(driver_id=driver_id).order_by(Ride.ride_id.asc()).all() # SELECT * FROM rides WHERE driver=null;
-    all_passenger_rides = Ride.query.filter_by(passenger_id=passenger_id).order_by(Ride.ride_id.asc()).all() # SELECT * FROM rides WHERE driver=null;
+    all_passenger_rides = Ride.query.filter((Ride.passenger_id == passenger_id) & (Ride.driver_id != None)).order_by(Ride.ride_id.asc()).all() # SELECT * FROM rides WHERE driver=null;
 
 
     return render_template("overview.html", all_driver_rides=all_driver_rides, all_passenger_rides=all_passenger_rides)
