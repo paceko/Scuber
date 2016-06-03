@@ -31,16 +31,13 @@
                 <div class="street_block">From</div>
                 <div class="street_block">To</div>
                 <div class="time_block">When</div>
-                
-
-                <div class="rate_block">
             {% if 'driver_id' in session %}
-                <div class="tiny_block">Star</div>
-                Claim
+                    <div class="tiny_block">Star</div>
+                    <div class="tiny_block">Claim</div>
             {% endif %}
-                </div></li>
+                </li>
 
-
+<!-- for each loop -->
             {% for ride in all_rides %}
                 <li>
                 <div class="street_block">{{ride.passenger_location}}</div>
@@ -48,12 +45,17 @@
                 <div class="time_block">{{ride.pick_up_time.__format__('%b %d %-I:%M %p')}}</div>
                 
 
-                <div class="rate_block">
-            {% if 'driver_id' in session %}
-                <div class="tiny_block">{% if ride.avg_rating %} {{ ride.avg_rating | round }} {% else %} none {% endif %} </div>
-                <a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a>
+                {% if 'driver_id' in session %}
+                    <div class="tiny_block">
+                        {% if ride.avg_rating %} 
+                            {{ ride.avg_rating | round }} 
+                        {% else %} 
+                            none 
+                        {% endif %} 
+                    </div>
+                    <div class="tiny_block"><a href ="{{ '/claim-rides/%s' % ride.ride_id }}">claim</a></div>
             {% endif %}
-                </div></li>
+                </li>
             {% endfor %}
 
         </ul>
@@ -121,13 +123,58 @@ Google Maps -->
         //initmap creates events that refer to the map variable, so it map variable persists without being global
       function initMap() 
       {
+        var myLat = 37.768071;
+        var myLng = -122.437952;
+            //create marker 1 and 2 
+            var marker1;
+            var marker2;
+
+
+
         var mapDiv = document.getElementById('map');
         //if the map is created here, there's no access to it in window.onload
         var map = new google.maps.Map(mapDiv, {
-          center: {lat: 37.768071, lng: -122.437952},
-          zoom: 12,
-        
+          center: {lat: myLat, lng: myLng},
+          zoom: 12,        
         });
+
+        if (navigator.geolocation) 
+        {
+            navigator.geolocation.getCurrentPosition(function(position) {
+///                alert("LOCATION FOUND");
+
+                myLat = position.coords.latitude;
+                myLng = position.coords.longitude;
+                var pos = {
+                    lat: myLat,
+                    lng: myLng
+                };
+
+                map.setCenter(pos);
+
+                        if(typeof marker1 != "undefined")
+                        {
+                            marker1.setMap(null);    
+                        }
+                        marker1 = new google.maps.Marker({
+                            position: {lat: myLat, lng: myLng},
+                            map: map,
+                            title: "My Location",
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+           
+                        });    
+
+
+            }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+      
+
+
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({
@@ -223,9 +270,6 @@ Google Maps -->
             });
         
         }
-            //create marker 1 and 2 
-            var marker1;
-            var marker2;
             // binding 2 DOM elements to 2 variables
             var loc = document.getElementById("location");
             var dest = document.getElementById("destination");
@@ -357,9 +401,12 @@ $('#submit_button').click(function(){
 
     // adding address information to the feed
   
-
+    /* use the information typed in to create a JSON object */
     var feed_data = { 'passenger_location': passenger_location, 'passenger_destination': passenger_destination, 'pick_up_time': pick_up_time};
-    console.log(feed_data)
+    /* "{passenger_location:passenger_location,passenger_destination:passenger_destination,pick_up_time:pick_up_time}" 
+    feed_data[passenger_location] will show whatever was typed into the passenger_location variable (id=location)
+    */
+    console.log(feed_data) /* prints the json object to the javascript console */
 
 
     //.post is "asynchronos", which means "it takes a little while"
@@ -371,10 +418,9 @@ $('#submit_button').click(function(){
         console.log(status)
 
         $('#feed').append('<li>'
-                    + '<div class = "street_block">'+passenger_location+'</div>'
-                    + '<div class = "street_block">'+passenger_destination+'</div>'
+                    + '<div class = "street_block" style="margin-right: 3px;">'+passenger_location+'</div>'
+                    + '<div class = "street_block" style="margin-right: 3px;">'+passenger_destination+'</div>'
                     + '<div class = "time_block">'+formatted+'</div>'
-                    + '<div class = "rate_block">'+'<a href="/rides/'+data+'">rate</a></div>'
                     + '</li>');
     });
 

@@ -173,8 +173,8 @@ def feed_list():
     # select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id;
     # select * from rides join rides.passenger_id on (
     # select * from (select passenger_id, avg(passenger_rating) from rides where passenger_rating > 0 group by passenger_id) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id > 0;
-    cmd = 'select * from (select passenger_id, avg(passenger_rating) as avg_rating from rides where (passenger_rating > 0 or passenger_rating is null) group by passenger_id ) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id is null;'
-    all_rides = db.engine.execute(cmd)
+    cmd = 'select * from (select passenger_id, avg(passenger_rating) as avg_rating from rides group by passenger_id ) sq join rides on sq.passenger_id=rides.passenger_id WHERE rides.driver_id is null;'
+    query_result = db.engine.execute(cmd)
 
     #all_rides = Ride.query.all()
     # scores = []
@@ -185,7 +185,7 @@ def feed_list():
     #     scores.append(total/len(ride.passenger.rides))
 
 
-    return render_template("feed.html", all_rides=all_rides) #scores=scores
+    return render_template("feed.html", all_rides=query_result) #scores=scores
 
 
 ##################################################################################################
@@ -234,9 +234,10 @@ def update_ride(ride_id):
     ride = Ride.query.get(ride_id)
 
     #getting the form
-    if request.method == 'GET':
+    # This allows one web address (/forms/somenumber) to hold 2 pages
+    if request.method == 'GET': #the simple version - user has just typed a website & hit enter (or linked)
         return render_template("rating_form.html", ride=ride, session=session)
-    else:
+    else: #the complex version, user has typed a rating & hit the sumbit button
         passenger_rating = request.form.get('passenger_rating')
         driver_rating = request.form.get('driver_rating')
 

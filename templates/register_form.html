@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div style="background-image: url('/static/color_register.jpg');">
+<div style="background-image: url('/static/color_register.jpg'); height: 800px; text-align: center; padding-top: 40px;">
 <div class="lineup">
 
     <h1>Register Passenger</h1>
-    <form action="/register" method="POST">
+    <form action="/register" method="POST" style="text-align: left;">
         <div class='form-group'>
             <label>Firstname:
                 <input type='firstname' name='firstname' class='form-control'>
@@ -43,7 +43,7 @@
 </div>
 <div class="lineup">
     <h1>Register Driver</h1>
-    <form action="/register" method="POST">
+    <form action="/register" method="POST"  style="text-align: left;">
 
          <div class='form-group'>
             <label>First name:

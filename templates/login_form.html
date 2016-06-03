@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<div style="background-image: url('/static/scoot_login.png');">
+<div style="background-image: url('/static/scoot_login.png'); height: 800px; text-align: center; padding-top: 40px;">
 <div class="lineup">
 <h1>Login</h1>
 
-<form action="login" method="POST">
+<form action="login" method="POST"  style="text-align: left;">
 
     <div class="form-group">
         <label>
@@ -21,7 +21,7 @@
     </div>
 
     <div class="form-group">
-        <input type="submit" value="Log in" class="default">
+        <input type="submit" value="Log in" class="register">
     </div>
 
 </form>

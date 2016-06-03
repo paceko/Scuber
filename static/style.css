@@ -42,7 +42,9 @@
 .feedwrapper
 {
   height: 400px;
-  margin-left: -20px;
+  width: 620px;
+  margin: 0px;
+  padding: 0px;
 }
 
 
@@ -56,13 +58,14 @@
 .street_block /*for the street*/
 {
   display: inline-block;
-  width: 150px; 
+  width: 145px; 
+  
 }
 
 .tiny_block /*for the street*/
 {
   display: inline-block;
-  width: 35px; 
+  width: 55px; 
 }
 
 .rate_block
@@ -75,7 +78,7 @@
 .time_block
 {
   display: inline-block;
-  width: 120px;        
+  width: 115px;        
 }
 
 #feed a 
@@ -94,6 +97,7 @@
   justify-content: flex-end;
   align-items: flex-end;
   color: black;
+
 }
 /*get rid of bulletpoints*/
 .mapwrapper ul {
@@ -101,8 +105,10 @@
 	list-style: none;
 	background-color:#11939a;
 	color:#FFFFFF;
-	max-width: 560px;
 	height: 400px;
+
+  margin: 0px; padding: 10px;
+  padding-left: 20px;
 }
 
 
