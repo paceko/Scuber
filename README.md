@@ -1,3 +1,7 @@
+
+
+
+
 # Scuber
 
 Scuber is a new way to travel fast from point "A" to point "B" by scooter. This web app allows passenger's looking for ride-share to save time and make friends on short trips throughout San Francisco.  Passengers can book a scooter ride at the touch of a button and experience an enjoyable way of travel. 
