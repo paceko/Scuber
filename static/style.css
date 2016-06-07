@@ -15,6 +15,25 @@
   color: white;
   font-weight: 900;
   font-size: 16px;
+
+
+  overflow: scroll;
+  overflow-x: hidden;
+  list-style: none;
+  height: 500px;
+
+}
+
+#backdrop-logo {
+  margin: 20px;
+  position: absolute; 
+  right: -20px; 
+  top:0px; 
+  background-image: url(/static/overview_logo.png); 
+  background-size: auto 500px; 
+  background-repeat: no-repeat; 
+  width: 180px;  /* how much to show */
+  height: 560px
 }
 
 .lineup
@@ -39,14 +58,6 @@
   color: black;
 }
 
-.feedwrapper
-{
-  height: 400px;
-  width: 620px;
-  margin: 0px;
-  padding: 0px;
-}
-
 
 .feedinput{ 
   background-color:#435673;
@@ -58,14 +69,14 @@
 .street_block /*for the street*/
 {
   display: inline-block;
-  width: 145px; 
-  
+  width: 24%; 
+
 }
 
 .tiny_block /*for the street*/
 {
   display: inline-block;
-  width: 55px; 
+  width: 12%; 
 }
 
 .rate_block
@@ -78,7 +89,7 @@
 .time_block
 {
   display: inline-block;
-  width: 115px;        
+  width: 23%;        
 }
 
 #feed a 
@@ -100,19 +111,41 @@
 
 }
 /*get rid of bulletpoints*/
-.mapwrapper ul {
-  overflow: scroll;
-	list-style: none;
-	background-color:#11939a;
-	color:#FFFFFF;
-	height: 400px;
 
-  margin: 0px; padding: 10px;
-  padding-left: 20px;
+
+.feedwrapper
+{
+  height: 130px;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+//  background-color:#11939a;
 }
 
+.feedwrapper ul {
+  overflow: scroll;
+  overflow-x: hidden;
+	list-style: none;
+	color:#000000;
+	height: 100%;
+  width: 100%;
+  margin: 0px; padding: 10px;
+  padding-left: 20px;
+  display: inline-block;
+}
 
+#postRide {
+  margin: 0px; 
+  padding: 0px;
+  position: absolute;
+  right: 50px;
+}
 
+#map {
+  width: 100%;
+}
+
+body { font-family: "ntr"; font-size: 18px;}
 h1, h2, h3, .navbar-brand { font-family: "ntr";
                             color: #595959; 
                             text-align: center;}
@@ -129,8 +162,6 @@ h1, h2, h3, .navbar-brand { font-family: "ntr";
         }
 
         html, body {
-          width: 100%;
-          height: 100%;
           margin: 0;
           background-color: #FFFFFF;
         }
@@ -155,4 +186,80 @@ h1, h2, h3, .navbar-brand { font-family: "ntr";
           margin-left:20px; 
           margin-top: 20px;
         }
+
+
+input, button {
+  font-size: 16px;
+
+}
+
+
+.round_corners {
+
+}
+
+#location, #destination {
+  width: 140px;
+  padding-left: 5px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  border-radius: 12px;
+
+}
+
+#submit_button
+{
+  font-size: 18px;
+  border-radius: 12px;
+  height: 100px;
+  width: 100px;
+  background-color: #27B0E1;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+#submit_button:hover
+{
+  background-color: #37d0E9;
+}
+
+#submit_button:active
+{
+  background-color: #178099;
+}
+
+
+#pick_up_time
+{
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 18px;
+  border-radius: 12px;
+
+}
+
+#passenger_rating {
+  text-align: center;
+}
+
+/*this is to change the rating box*/
+input[type=number] {
+  -moz-appearance: textfield;
+
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/*this is to change the rating box*/
+input[type=number]::-webkit-textfield-decoration-container {
+  padding-left: 5px;
+}
+
+
+
 

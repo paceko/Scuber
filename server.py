@@ -260,7 +260,7 @@ def claim_ride(ride_id):
     """Driver can claim passenger ride"""
 
     # flash("Claiming ride...")
-    
+   
     if 'driver_id' in session:
         # make new template for driver claim YAY
         my_ride = Ride.query.get(ride_id) #FIXME !
@@ -306,7 +306,7 @@ def overview():
 # Debug
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = True 
     # I am setting debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
     # Do not debug for demo

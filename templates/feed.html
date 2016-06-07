@@ -1,16 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-	<div id='homepage-block'>
 
     <style>
       #map {
-        width: 500px;
+        width: 100%;
         height: 400px;
       }
     </style>
 
-  </head>
 
   <body>
 
@@ -18,15 +16,40 @@
     <h1 id="feed-page-title">on demand scooter ridesharing</h1>
 </div>
 
-<div class='mapwrapper'>
+<!--div class='mapwrapper'-->
     <div id="map"></div>
 
     <div class='feedwrapper'>
+                            {% if not 'driver_id' in session %}
+    <div id="postRide">
+        <form action="feed" method="POST">
+        <div style="float: left;">
+        <input id='location' placeholder='location'
+        type='text' name="myTextBox"
+        class='feedinput'/>
+        <!-- class is to style the textbox -->
+
+        <input id='destination' placeholder='destination'
+        type='text' name="myTextBox"
+        class='feedinput'/><br>
+        <!-- class is to style the textbox -->
+
+
+        <input id='pick_up_time' placeholder='pick up'
+        type='datetime-local' name="myTextBox"
+        class='feedinput' value=''/>
+    </div>
+    <div style="float: left; margin-left: 8px;">
+        <button id='submit_button' type='button'  />POST MY<br>RIDE</button>
+    </div>
+        </form>
+    </div>
+
+            {% endif %}
 
         <!-- using jinja to make passenger data stay in feed -->
         <!-- from server to page. Thing that you see first. -->
         <ul id='feed'>
-
                 <li>
                 <div class="street_block">From</div>
                 <div class="street_block">To</div>
@@ -61,39 +84,16 @@
         </ul>
 
 
-                    {% if not 'driver_id' in session %}
-        <form action="feed" method="POST">
-        <input id='location' placeholder='location'
-        type='text' name="myTextBox"
-        class='feedinput'/>
-        <!-- class is to style the textbox -->
-
-        <input id='destination' placeholder='destination'
-        type='text' name="myTextBox"
-        class='feedinput'/>
-        <!-- class is to style the textbox -->
-
-
-        <input id='pick_up_time' placeholder='pick up'
-        type='datetime-local' name="myTextBox"
-        class='feedinput' value=''/>
-
-        <!-- class is to style the textbox -->
-
-        <br/>
-
-        <button id='submit_button' type='button'  />POST MY RIDE</button>
-
-        </form>
-            {% endif %}
-
     </div>
-</div>
+        <!-- class is to style the textbox -->
+
+    
 
 
+
+<!--/div-->
 <!-- ######################################################################################################
 Google Maps -->
-
     <script>
         var windowLoaded = 0;
         var mapLoaded = 0;
@@ -160,7 +160,7 @@ Google Maps -->
                             position: {lat: myLat, lng: myLng},
                             map: map,
                             title: "My Location",
-                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/V2aOtD.png'
            
                         });    
 
@@ -178,7 +178,14 @@ Google Maps -->
 
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer({
-            suppressMarkers: true
+            suppressMarkers: true, 
+            polylineOptions: 
+            { 
+                strokeColor: "orange", 
+                strokeOpacity: 0.7,
+                strokeWeight: 8
+            }
+
         });
         directionsDisplay.setMap(map);
     
@@ -187,7 +194,7 @@ Google Maps -->
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#444444"
+                "color": "#595959"
             }
         ]},
     {
@@ -246,7 +253,7 @@ Google Maps -->
         "elementType": "all",
         "stylers": [
             {
-                "color": "#c1c2c3"
+                "color": "#68c3e8"
             },
             {
                 "visibility": "on"
@@ -254,8 +261,8 @@ Google Maps -->
         ]
     }];
 
-
-        map.setOptions({styles: styles});
+        var options = $.extend({scrollwheel: false}, options);
+        map.setOptions({styles: styles, options: options});
 
 
           // Create a marker and set its position.
@@ -294,7 +301,7 @@ Google Maps -->
                             position: {lat: coordsx, lng: coordsy},
                             map: map,
                             title: title,
-                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/V2aOtD.png'
            
                         });    
                          
@@ -321,7 +328,7 @@ Google Maps -->
                             position: {lat: coordsx, lng: coordsy},
                             map: map,
                             title: title,
-                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/lChjmU.png'
+                            icon: 'http://imagizer.imageshack.us/v2/100x75q90/924/V2aOtD.png'
            
                         });    
 
@@ -349,8 +356,7 @@ Google Maps -->
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?callback=mapScriptLoaded"
         async defer></script>
-
-  </body>
+      </body>
 
 <!-- ############################################################################################################# -->
     <!-- jQuery methods here -->
@@ -359,10 +365,9 @@ Google Maps -->
 
 <!-- #############################################################################################################
 ### posting the current time in the calendar box for ease of use for passengers (does not work with timezones)-->
-
 <script type="text/javascript">
 
-$(document).ready()
+$(document).ready(function()
 {
     var now = new Date($.now())
         , year
@@ -383,7 +388,7 @@ $(document).ready()
     formattedDateTime = year + '-' + month + '-' + date + 'T' + hours + ':' + minutes + ':' + seconds;
     $("#pick_up_time").val(formattedDateTime);
     
-}
+});
 // #############################################################################################################
 
 // whenever you click the submit button it will add the location, 
@@ -398,6 +403,25 @@ $('#submit_button').click(function(){
     var dt = moment(pick_up_time);
 
     var formatted = dt.format('MMM DD h:mm A');
+
+    var failed = 0;
+
+    if(passenger_destination == "")
+    {
+        $("#destination").focus();
+        failed = failed + 1;
+    }
+
+    if(passenger_location == "")
+    {
+        $("#location").focus();
+        failed = failed + 1;
+    }
+
+
+
+    if(failed > 0)
+        return;
 
     // adding address information to the feed
   
@@ -432,7 +456,4 @@ $('#submit_button').click(function(){
 
 </script> 
 
-
-</div>
 {% endblock %}
-
