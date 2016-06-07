@@ -2,7 +2,7 @@
 
 <a href="https://www.youtube.com/watch?v=rEVGt2VCl2g&feature=youtu.be
 " target="_blank"><img src="http://imageshack.com/a/img924/5239/HoSLh1.jpg" 
-alt="Scuber" width="300" height="200" border="30" /></a>
+alt="Scuber" width="500" height="200" border="30" /></a>
 
 # Scuber
 
