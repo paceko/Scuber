@@ -18,7 +18,7 @@ class PartyTests(unittest.TestCase):
         self.assertIn("Register", result.data)
 
     def test_login(self):
-        # FIXME: Add a test to show we see the login form, but NOT the party details
+        # FIXME: Add a test to show we see the login form
         result = self.client.get("/login")
         self.assertIn("Login", result.data)
 
@@ -26,8 +26,8 @@ class PartyTests(unittest.TestCase):
         result = self.client.post("/login",
                                   data={'email': "harry@gmail.com", 'password': "harry"},
                                   follow_redirects=True)
-     
-        # FIXME: Once we login, we should see the party details, but not the RSVP form
+   
+        # FIXME: Once we login, we should see the details
         self.assertIn("on demand scooter ridesharing", result.data)
 
 
