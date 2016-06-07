@@ -306,7 +306,7 @@ def overview():
 # Debug
 
 if __name__ == "__main__":
-    app.debug = True 
+    app.debug = False
     # I am setting debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
     # Do not debug for demo
