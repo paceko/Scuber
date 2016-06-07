@@ -1,7 +1,7 @@
 
 
 <a href="https://www.youtube.com/watch?v=rEVGt2VCl2g&feature=youtu.be
-" target="_blank"><img src="http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg" 
+" target="_blank"><img src="http://imageshack.com/a/img924/5239/HoSLh1.jpg" 
 alt="Scuber" width="270" height="200" border="30" /></a>
 
 # Scuber
