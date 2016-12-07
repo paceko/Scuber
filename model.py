@@ -108,16 +108,30 @@ class Driver(db.Model):
                                                                 self.phonenumber))
 
 ############################################################################################
-# Helper functions
-
-def connect_to_db(app):
-    """Connect the database to our Flask app."""
-
-    # Configure to use our PostgreSQL database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///rides'
-#    app.config['SQLALCHEMY_ECHO'] = True
+def connect_to_db(app, db_uri=None):
+    """ Connect application to database """
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or 'postgres:///scuber'
+    # app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
     db.init_app(app)
+
+
+if __name__ == "__main__":
+    print "Successful Connected to database"
+
+
+
+
+# Helper functions
+
+#def connect_to_db(app):
+#    """Connect the database to our Flask app."""
+
+    # Configure to use our PostgreSQL database
+#    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///rides'
+# #   app.config['SQLALCHEMY_ECHO'] = True
+#   db.app = app
+#    db.init_app(app)
 
 
 if __name__ == "__main__":
