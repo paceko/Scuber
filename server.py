@@ -303,16 +303,29 @@ def overview():
     return render_template("overview.html", all_driver_rides=all_driver_rides, all_passenger_rides=all_passenger_rides)
 
 #########################################################################################
-# Debug
 
+# Name is not a module
 if __name__ == "__main__":
-    app.debug = False
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
+    db.create_all(app=app)
+    DEBUG = "NO_DEBUG" not in os.environ
+    DEBUG_TB_INTERCEPT_REDIRECTS = False
+    # DebugToolbarExtension(app)
+    # set_val_user_id()
+    PORT = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
+
+
+# Debug
+#if __name__ == "__main__":
+#    app.debug = False
     # I am setting debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
     # Do not debug for demo
-    connect_to_db(app)
+#    connect_to_db(app)
 
     # Use the DebugToolbar
-    DebugToolbarExtension(app)
+#    DebugToolbarExtension(app)
 
-    app.run()
+#    app.run()
+    
