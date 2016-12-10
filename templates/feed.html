@@ -133,7 +133,7 @@ Google Maps -->
 
         var mapDiv = document.getElementById('map');
         //if the map is created here, there's no access to it in window.onload
-        var map = new google.maps.Map(mapDiv, {
+       var map = new google.maps.Map(mapDiv, {
           center: {lat: myLat, lng: myLng},
           zoom: 12,        
         });
@@ -354,7 +354,7 @@ Google Maps -->
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?callback=mapScriptLoaded"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB_MPHVLyO6buf5XC0xuE6ssrhOXTUSxiw&callback=initMap"
         async defer></script>
       </body>
 
