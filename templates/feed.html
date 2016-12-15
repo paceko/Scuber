@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block body %}
 
-
-    <style>
-      #map {
-        width: 100%;
-        height: 400px;
-      }
-    </style>
-
-
-  <body>
-
-<div>
-    <h1 id="feed-page-title">on demand scooter ridesharing</h1>
-</div>
+    <div>
+        <h1 id="feed-page-title">on demand scooter ridesharing</h1>
+    </div>
 
 <!--div class='mapwrapper'-->
     <div id="map"></div>
@@ -60,7 +49,7 @@
             {% endif %}
                 </li>
 
-<!-- for each loop -->
+        <!-- for each loop -->
             {% for ride in all_rides %}
                 <li>
                 <div class="street_block">{{ride.passenger_location}}</div>
@@ -94,7 +83,9 @@
 <!--/div-->
 <!-- ######################################################################################################
 Google Maps -->
-    <script>
+    <script> 
+    "use strict";
+
         var windowLoaded = 0;
         var mapLoaded = 0;
 
@@ -167,12 +158,19 @@ Google Maps -->
 
             }, function() {
                 handleLocationError(true, infoWindow, map.getCenter());
+
             });
         } else {
             // Browser doesn't support Geolocation
             handleLocationError(false, infoWindow, map.getCenter());
         }
-      
+
+        function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+      }
 
 
 
@@ -287,9 +285,9 @@ Google Maps -->
                 //look up coordinates for title + ", san francisco"
                 // I know this key shouldn't be in here but this is just showing for demo
                 var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + title + "san francisco" + "&key=AIzaSyAqMefxirNU0Sic4tSh5izZbTzMwDiMo8Q";
+                    + title + "san francisco" + "&key=AIzaSyBxtu_GqonEXNKEIzlMlF00LHpLYEPEjo0";
                 $.ajax({type: "GET", url: myUrl, dataType: 'json'
-                    }).done(function(result) 
+                    }).done(function(result)
                     {
                         var coordsx = parseFloat(result.results[0].geometry.location.lat);
                         var coordsy = parseFloat(result.results[0].geometry.location.lng);
@@ -313,11 +311,10 @@ Google Maps -->
                 var title = dest.value;
              
                 var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + title + " san francisco" + "&key=AIzaSyAqMefxirNU0Sic4tSh5izZbTzMwDiMo8Q";
-                $.ajax({type: "GET", url: myUrl, dataType: 'json'
-                    }).done(function(result) 
+                    + title + " san francisco" + "&key=AIzaSyBxtu_GqonEXNKEIzlMlF00LHpLYEPEjo0";
+                
+                $.ajax({type: "GET", url: myUrl, dataType: 'json'}).done(function(result) 
                     {
-                        console.log("I'm an ajax call");
                         var coordsx = parseFloat(result.results[0].geometry.location.lat);
                         var coordsy = parseFloat(result.results[0].geometry.location.lng);
                         //marker2.setPosition(new google.maps.LatLng(coordsx, coordsy));
@@ -355,18 +352,8 @@ Google Maps -->
 
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?callback=mapScriptLoaded"
-        async defer></script>
-      </body>
 
-<!-- ############################################################################################################# -->
-    <!-- jQuery methods here -->
-    <!-- Javascript methods here -->
-
-
-<!-- #############################################################################################################
-### posting the current time in the calendar box for ease of use for passengers (does not work with timezones)-->
-<script type="text/javascript">
+<script>
 
 $(document).ready(function()
 {
@@ -390,7 +377,6 @@ $(document).ready(function()
     $("#pick_up_time").val(formattedDateTime);
     
 });
-// #############################################################################################################
 
 // whenever you click the submit button it will add the location, 
 // destination and time to the feed
@@ -456,5 +442,4 @@ $('#submit_button').click(function(){
 });
 
 </script> 
-
 {% endblock %}

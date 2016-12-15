@@ -22,7 +22,10 @@
           
 <link href='https://fonts.googleapis.com/css?family=Frijole' rel='stylesheet' type='text/css'>
     <style>
-
+      #map {
+        width: 100%;
+        height: 400px;
+      }
     </style>
 </head>
 <body>
@@ -75,8 +78,11 @@
 {% endblock %}
 </div>
 
+{% block body%}{% endblock %}
+
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxtu_GqonEXNKEIzlMlF00LHpLYEPEjo0&callback=initMap" type="text/javascript"></script>
 
 
 </body>
