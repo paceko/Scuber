@@ -337,20 +337,7 @@ Google Maps -->
                         
                         // Retrieve the start and end locations and create a DirectionsRequest using
                         // WALKING directions.
-                        directionsService.route({
-                            origin: document.getElementById("location").value,
-                            destination: document.getElementById("destination").value,
-                            travelMode: 'BICYCLING'
-                        }, function(response, status) {
-                            if (status === 'OK'){
-                                directionsDisplay.setDirections(response);
-                            } else {
-                                window.alert("Directions failed due to " + status);
-                            }
-                        }
-                        );
-                        console.log(loc.value + ", san francisco");
-                        console.log(dest.value + ", san francisco");
+                       
 
                     });
             };
