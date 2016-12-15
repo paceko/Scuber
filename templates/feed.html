@@ -338,8 +338,8 @@ Google Maps -->
                         // Retrieve the start and end locations and create a DirectionsRequest using
                         // WALKING directions.
                         directionsService.route({
-                            origin: document.getElementById("location");.value,
-                            destination: document.getElementById("destination");.value,
+                            origin: document.getElementById("location").value,
+                            destination: document.getElementById("destination").value,
                             travelMode: 'BICYCLING'
                         }, function(response, status) {
                             if (status === 'OK'){
