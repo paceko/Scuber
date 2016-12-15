@@ -334,20 +334,23 @@ Google Maps -->
                         console.log(loc.value);
                         console.log(dest.value);
 
+                        
+                        // Retrieve the start and end locations and create a DirectionsRequest using
+                        // WALKING directions.
                         directionsService.route({
-                            origin: loc.value + " , san francisco",
-                            destination: dest.value + " , san francisco",
-                            travelMode: google.maps.TravelMode.BICYCLING
+                            origin: document.getElementById("location");.value,
+                            destination: document.getElementById("destination");.value,
+                            travelMode: 'BICYCLING'
                         }, function(response, status) {
-                            if(status === google.maps.DirectionsStatus.OK) {
+                            if (status === 'OK'){
                                 directionsDisplay.setDirections(response);
                             } else {
                                 window.alert("Directions failed due to " + status);
                             }
                         }
                         );
-                        console.log(loc.value + " , san francisco");
-                        console.log(dest.value + " , san francisco");
+                        console.log(loc.value + ", san francisco");
+                        console.log(dest.value + ", san francisco");
 
                     });
             };
