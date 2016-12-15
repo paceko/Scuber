@@ -332,10 +332,11 @@ Google Maps -->
 
                         console.log("Routing..");
                         console.log(loc.value);
+                        console.log(dest.value);
 
                         directionsService.route({
-                            origin: loc.value + ", san francisco",
-                            destination: dest.value + ", san francisco",
+                            origin: loc.value + " , san francisco, CA",
+                            destination: dest.value + " , san francisco, CA",
                             travelMode: google.maps.TravelMode.BICYCLING
                         }, function(response, status) {
                             if(status === google.maps.DirectionsStatus.OK) {
@@ -345,6 +346,8 @@ Google Maps -->
                             }
                         }
                         );
+                        console.log(origin);
+                        console.log(destination);
 
                     });
             };
