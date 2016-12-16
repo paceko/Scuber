@@ -337,8 +337,8 @@ Google Maps -->
                         
                         // Retrieve the start and end locations and create a DirectionsRequest using
                         // WALKING directions.
-                        var startit = loc.value + ", San Francisco"
-                        var endit = dest.value + ", San Francisco"
+                        var startit = loc.value + ", San Francisco, CA"
+                        var endit = dest.value + ", San Francisco, CA"
                         calculateAndDisplayRoute(directionsService, directionsDisplay, startit, endit);
                         console.log(loc.value + ", san francisco");
                         console.log(dest.value + ", san francisco");
@@ -359,7 +359,7 @@ Google Maps -->
                 directionsDisplay.setDirections(response);
 
             }else{
-                window.alert("Directions failed due to " + status);   
+                window.alert("Directions SUCK AND failed due to " + status);   
             }
         });
       }
