@@ -174,7 +174,7 @@ Google Maps -->
 
 
 
-        var directionsService = new google.maps.DirectionsService;
+        var directionsService = new google.maps.DirectionsService;      
         var directionsDisplay = new google.maps.DirectionsRenderer({
             suppressMarkers: true, 
             polylineOptions: 
@@ -338,6 +338,22 @@ Google Maps -->
                         // Retrieve the start and end locations and create a DirectionsRequest using
                         // WALKING directions.
                        
+                        directionsService.route({
+                            
+                            
+                            origin: loc.value + ", San Francisco",
+                            destination: dest.value + ", San Francisco",
+                            travelMode: "BICYCLING"
+                        }, function(response, status) {
+                            if (status === 'OK'){
+                                directionsDisplay.setDirections(response);
+                            } else {
+                                window.alert("Directions failed due to " + status);
+                            }
+                        }
+                        );
+                        console.log(loc.value + ", san francisco");
+                        console.log(dest.value + ", san francisco");
 
                     });
             };
