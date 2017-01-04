@@ -285,7 +285,7 @@ Google Maps -->
                 //look up coordinates for title + ", san francisco"
                 // I know this key shouldn't be in here but this is just showing for demo
                 var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + title + " san francisco" + "&key=AIzaSyBxtu_GqonEXNKEIzlMlF00LHpLYEPEjo0";
+                    + title + " san francisco" + "&key=AIzaSyBkEXeJaGAZCwwEGWvT_F_aAusV6yqhPuk";
                 $.ajax({type: "GET", url: myUrl, dataType: 'json'
                     }).done(function(result)
                     {
@@ -311,7 +311,7 @@ Google Maps -->
                 var title = dest.value;
              
                 var myUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                    + title + " san francisco" + "&key=AIzaSyBxtu_GqonEXNKEIzlMlF00LHpLYEPEjo0";
+                    + title + " san francisco" + "&key=AIzaSyBkEXeJaGAZCwwEGWvT_F_aAusV6yqhPuk";
                 
                 $.ajax({type: "GET", url: myUrl, dataType: 'json'}).done(function(result) 
                     {
